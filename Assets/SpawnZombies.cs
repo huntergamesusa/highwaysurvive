@@ -107,13 +107,13 @@ public class SpawnZombies : MonoBehaviour {
 			if(activeZombies[i].name == thisZombie)
 			{
 				print (activeZombies [i].name);
-				if (activeZombies [i] != null) {
+//				if (activeZombies [i] != null) {
 					Destroy (activeZombies [i]);
 				
 					activeZombies.Remove (activeZombies [i]);
-				}
+//				}
 				positionZombies.Remove ("myzombie" + randomZombie);
-				positionZombies.Add ("myzombie" + randomZombie,0);
+//				positionZombies.Add ("myzombie" + randomZombie,0);
 
 			}
 		}

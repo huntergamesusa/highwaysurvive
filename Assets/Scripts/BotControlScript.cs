@@ -42,16 +42,23 @@ public class BotControlScript : MonoBehaviour
 	Vector3 dir;
 	float dist;
 	AudioClip woosh;
+	AudioClip sonicAudio;
+	public GameObject sonicsmash;
+	EnableRagdoll ragdollenable;
+	bool isBig=false;
+	public static bool magnetPowerUp = false;
 	public void ReceiveJoystick(GameObject joy, GameObject basecont){
 		baseController = basecont;
 		joystickController=joy;
-		joystickController.transform.parent.GetComponent<Button>().onClick.AddListener(()=>Attack());
+		joystickController.transform.parent.GetComponent<Button>().onClick.AddListener(()=>Attack(PlayerColliderManager.powerup));
 
 
 	}
 
 	void Awake(){
 		woosh = Resources.Load ("Sounds/woosh_2")as AudioClip;
+		sonicAudio = Resources.Load ("Sounds/Blaster")as AudioClip;
+		ragdollenable=transform.Find ("RagdollEnable").GetComponent<EnableRagdoll> ();
 
 	}
 	void Update(){
@@ -85,10 +92,30 @@ public class BotControlScript : MonoBehaviour
 
 
 
-	public void Attack(){
+	public void Attack(string type){
+		type = "magnet";
 		if (anim.enabled == false)
 			return;
-		print ("attack");
+
+
+		switch(type){
+		default:
+			
+			SonicBoom ();
+
+			break;
+
+		case "bigguy":
+			StartCoroutine (BigGuyEnable ());
+			break;
+
+		case "magnet":
+			StartCoroutine (MagnetStart ());
+
+			break;
+		
+		case "sonicboom":
+			PlayerColliderManager.powerup = "";
 		if (currentBaseState.fullPathHash == locoState) {
 
 				slashAnim.SetActive (true);
@@ -106,6 +133,72 @@ public class BotControlScript : MonoBehaviour
 			GetComponent<AudioSource>().PlayOneShot(woosh,Random.Range(.8f,1));
 
 			}
+	
+		break;
+		}
+		PlayerColliderManager.powerup = "";
+
+
+	}
+
+IEnumerator MagnetStart(){
+		magnetPowerUp = true;
+	yield return new WaitForSeconds (10);
+		magnetPowerUp = false;
+
+}
+
+	IEnumerator BigGuyEnable(){
+		//ignores car from throwing player up in the are
+		isBig=true;
+		GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezePositionY|RigidbodyConstraints.FreezeRotation;
+
+		ragdollenable.PauseZombie (true);
+		transform.Find ("BigPowerup").gameObject.SetActive (true);
+		LeanTween.scale (gameObject, new Vector3 (34, 34, 34), .3f).setEaseInOutCirc ();
+		yield return new WaitForSeconds (10);
+		isBig=false;
+		ragdollenable.PauseZombie (false);
+		transform.Find ("BigPowerup").gameObject.SetActive (false);
+		GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation;
+
+		LeanTween.scale (gameObject, new Vector3 (11.42057f, 11.42057f, 11.42057f), .3f).setEaseInOutCirc ();
+
+	}
+
+	public void SonicBoom(){
+		//		var speed = 4;
+		GameObject sonicBoomFab = Instantiate(sonicsmash, transform.position,Quaternion.identity) as GameObject;
+		//		sonicBoomFab.GetComponent<ParticleSystem>().main.simulationSpeed = speed;
+		for(int i = 0; i < sonicBoomFab.transform.childCount; i++){
+			//			sonicBoomFab.transform.GetChild(i).GetComponent<ParticleSystem>().main.simulationSpeed = speed;
+		}
+
+		//			Camera.main.SendMessage("Shake");
+		GetComponent<AudioSource>().PlayOneShot(sonicAudio);
+
+		// Applies an explosion force to all nearby rigidbodies
+		Vector3 explosionPos  = transform.position;
+		Collider[] colliders = Physics.OverlapSphere (explosionPos, 25);
+
+		foreach (Collider hit2 in colliders) {
+
+
+			switch (hit2.tag) {
+			case "zombieparent":
+				GameObject ragenable = hit2.transform.Find ("RagdollEnable").gameObject;
+				ragenable.GetComponent<EnableRagdoll> ().EngageRagdollZombie (Vector3.zero, true, transform.position);
+
+				break;
+
+			
+			case "car":
+				hit2.GetComponent<CarDrive> ().CarHit (true,transform.position,8000000f,50,5f);
+				break;
+			}
+		
+		}
+
 	}
 
 
@@ -115,8 +208,15 @@ public class BotControlScript : MonoBehaviour
 		float v = dist;
 			// setup v variables as our vertical input axis
 		anim.SetFloat("Speed", v);							// set our animator's float parameter 'Speed' equal to the vertical input axis				
-//		anim.SetFloat("Direction", h); 						// set our animator's float parameter 'Direction' equal to the horizontal input axis		
-		anim.speed = PlayerPrefs.GetFloat("animspeed");								// set the speed of our animator to the public variable 'animSpeed'
+//		anim.SetFloat("Direction", h); 	
+		// set our animator's float parameter 'Direction' equal to the horizontal input axis
+		if (isBig) {
+			anim.speed = PlayerPrefs.GetFloat ("animspeed")/1.5f;		
+		} else {
+			anim.speed = PlayerPrefs.GetFloat ("animspeed");		
+
+		}
+		// set the speed of our animator to the public variable 'animSpeed'
 		anim.SetLookAtWeight(lookWeight);					// set the Look At Weight - amount to use look at IK vs using the head's animation
 		currentBaseState = anim.GetCurrentAnimatorStateInfo(0);	// set our currentState variable to the current state of the Base Layer (0) of animation
 

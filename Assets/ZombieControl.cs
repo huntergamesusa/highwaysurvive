@@ -26,9 +26,12 @@ public class ZombieControl : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if (target == null)
+			return;
 		if (zombieAnim.GetCurrentAnimatorStateInfo (0).IsName ("Walk")) {
 //			transform.LookAt (target);
 			var rotation = Quaternion.LookRotation(target.position - transform.position);
+			rotation.x = 0;
 			transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * damping);
 		
 			mainRigid.velocity = transform.forward * speed;

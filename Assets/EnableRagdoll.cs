@@ -8,6 +8,8 @@ public class EnableRagdoll : MonoBehaviour {
 	GameObject parent;
 	GameObject ragdollEng;
 	AudioClip facepunch;
+	bool ragdolloff;
+
 	// Use this for initialization
 	void Awake () {
 		parent = transform.parent.gameObject;
@@ -24,6 +26,10 @@ public class EnableRagdoll : MonoBehaviour {
 //		}
 	}
 
+	public void PauseZombie(bool onoff){
+		ragdolloff = onoff;
+	}
+
 	public IEnumerator PauseTime(){
 		Time.timeScale = 0f;
 		yield return new WaitForSecondsRealtime(.1f);
@@ -37,24 +43,36 @@ public class EnableRagdoll : MonoBehaviour {
 			//16 is Weapon
 		if(coll.gameObject.layer == 16 ){
 				StartCoroutine (PauseTime ());
-				EngageRagdollZombie (coll.gameObject.transform.forward * 10000);
+				EngageRagdollZombie (coll.gameObject.transform.forward * 10000,false, Vector3.zero);
 				PlaySwordHit ();
 		}
+			if (coll.tag == "bigpowerup") {
+				print ("hit powerup zombie");
+				EngageRagdollZombie (coll.gameObject.transform.forward * 10000,false, Vector3.zero);
+
+			}
 		}
 
 		if (coll.tag == "carragdoll") {
 
 			if (isZombie) {
-				EngageRagdollZombie (Vector3.zero);
+				EngageRagdollZombie (Vector3.zero,false,Vector3.zero);
 			
 
 			} else {
-				EngageRagdoll ();
+				if (!ragdolloff) {
+					EngageRagdoll ();
+				}
 			}
 		}
 		if (coll.tag == "zombietrigger") {
-			EngageRagdoll ();
+			if (!ragdolloff) {
+				
+				EngageRagdoll ();
+			}
 		}
+
+	
 	
 	}
 
@@ -76,7 +94,7 @@ public class EnableRagdoll : MonoBehaviour {
 			Destroy (gameObject);
 		}
 	}
-	void EngageRagdollZombie(Vector3 addforce){
+	public void EngageRagdollZombie(Vector3 addforce,bool explosive,Vector3 explosionPos){
 		if (!isKilled) {
 			isKilled = true;
 			Physics.IgnoreLayerCollision (17, 12, false);
@@ -93,11 +111,17 @@ public class EnableRagdoll : MonoBehaviour {
 				// do what you want with the rigidbody
 				child.isKinematic = false;
 				child.useGravity = true;
-				child.AddForce(addforce.x,Mathf.Abs(addforce.y*2f),addforce.z);
+				if (!explosive) {
+					child.AddForce (addforce.x, Mathf.Abs (addforce.y * 2f), addforce.z);
+				} else {
+					child.AddExplosionForce(9500f, explosionPos, 50,40.0f);
+
+				}
 
 			}
-			root.transform.parent = null;
-
+			if (root) {
+				root.transform.parent = null;
+			}
 			StartCoroutine(SetDestroy (root, 3));
 
 		}

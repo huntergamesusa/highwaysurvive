@@ -104,17 +104,17 @@ public class SpawnCollectables : MonoBehaviour {
 	 public void DestroyCoin(string mycoin){
 		for(int i = 0; i < activeCoins.Count; i++)
 		{				
-			
-			if(activeCoins[i].name == mycoin)
-			{
-				if (activeCoins [i] != null) {
+			if (activeCoins [i] != null) {
+				
+				if (activeCoins [i].name == mycoin) {
 					
 					Destroy (activeCoins [i]);
 					activeCoins.Remove (activeCoins [i]);
-				}
-				positionCollectable.Remove ("roadcoin" + randomCoin);
-				positionCollectable.Add ("roadcoin" + randomCoin,0);
 
+					positionCollectable.Remove ("roadcoin" + randomCoin);
+//					positionCollectable.Add ("roadcoin" + randomCoin, 0);
+
+				}
 			}
 		}
 

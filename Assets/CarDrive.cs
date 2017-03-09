@@ -17,6 +17,8 @@ public class CarDrive : MonoBehaviour {
 	AudioSource source;
 	Transform rayPos;
 	Mesh carmesh;
+	bool dead;
+	GameObject ragdollenable;
 	void Awake(){
 
 		speed = PlayerPrefs.GetFloat ("carspeed");
@@ -49,7 +51,7 @@ public class CarDrive : MonoBehaviour {
 		GetComponent<Rigidbody> ().velocity = transform.forward * -speed;
 		carmesh = GetComponent<MeshFilter> ().mesh;
 
-		GameObject ragdollenable = new GameObject ("ragdoller");
+		ragdollenable = new GameObject ("ragdoller");
 		ragdollenable.AddComponent<BoxCollider> ();
 		ragdollenable.AddComponent<Rigidbody> ();
 		ragdollenable.GetComponent<Rigidbody> ().isKinematic = true;
@@ -63,6 +65,29 @@ public class CarDrive : MonoBehaviour {
 		ragdollenable.tag = "carragdoll";
 //		print(carmesh.bounds.size);
 
+	}
+
+	public void CarHit(bool explosion, Vector3 explosionPos,float power,float rad,float upmod){
+		dead = true;
+					GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.None;
+					GetComponent<Rigidbody> ().useGravity = true;
+					IgnoreColl (false);
+					Destroy (ragdollenable);
+					StartCoroutine (DestroyCar (6));
+
+		if (explosion) {
+			GetComponent<Rigidbody>().AddExplosionForce(power, explosionPos, rad,upmod);
+			ScoringManager.UpdateScore (ScoringManager.myScores.killcar, 1);
+
+		}
+
+	}
+
+	void OnTriggerEnter(Collider coll){
+		if (coll.tag == "bigpowerup") {
+			CarHit (true,new Vector3(coll.transform.position.x,coll.transform.position.y+3,coll.transform.position.z),8000000f,50f,4f);
+
+		}
 	}
 
 	void OnCollisionEnter (Collision coll) {
@@ -106,8 +131,9 @@ public class CarDrive : MonoBehaviour {
 	}
 
 	void FixedUpdate(){
-
-		GetComponent<Rigidbody> ().velocity = transform.forward * -speed;
+		if (!dead){
+			GetComponent<Rigidbody> ().velocity = transform.forward * -speed;
+	}
 
 	}
 }
