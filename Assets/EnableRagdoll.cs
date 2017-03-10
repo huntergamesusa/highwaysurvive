@@ -39,15 +39,22 @@ public class EnableRagdoll : MonoBehaviour {
 	
 	// Update is called once per frame
 	void OnTriggerEnter (Collider coll) {
+		if (isKilled)
+			return;
 		if(isZombie){
 			//16 is Weapon
 		if(coll.gameObject.layer == 16 ){
 				StartCoroutine (PauseTime ());
+				ScoringManager.UpdateScore (ScoringManager.myScores.killzombie, 1);
+
 				EngageRagdollZombie (coll.gameObject.transform.forward * 10000,false, Vector3.zero);
 				PlaySwordHit ();
 		}
 			if (coll.tag == "bigpowerup") {
 				print ("hit powerup zombie");
+				print (gameObject.name);
+				ScoringManager.UpdateScore (ScoringManager.myScores.killzombie, 1);
+
 				EngageRagdollZombie (coll.gameObject.transform.forward * 10000,false, Vector3.zero);
 
 			}
@@ -135,7 +142,6 @@ public class EnableRagdoll : MonoBehaviour {
 
 
 	void PlaySwordHit(){
-		ScoringManager.UpdateScore (ScoringManager.myScores.killzombie, 1);
 		transform.parent.GetComponent<AudioSource> ().pitch = Random.Range (.8f, 1.2f);
 		transform.parent.GetComponent<AudioSource> ().PlayOneShot (facepunch);
 

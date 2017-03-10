@@ -44,9 +44,14 @@ public class BotControlScript : MonoBehaviour
 	AudioClip woosh;
 	AudioClip sonicAudio;
 	public GameObject sonicsmash;
+	public GameObject bomb;
 	EnableRagdoll ragdollenable;
 	bool isBig=false;
 	public static bool magnetPowerUp = false;
+	public static int bombsLeft=0;
+	GameObject powerupParent;
+	bool delayPowerup;
+	GameObject bombsUI;
 	public void ReceiveJoystick(GameObject joy, GameObject basecont){
 		baseController = basecont;
 		joystickController=joy;
@@ -59,6 +64,7 @@ public class BotControlScript : MonoBehaviour
 		woosh = Resources.Load ("Sounds/woosh_2")as AudioClip;
 		sonicAudio = Resources.Load ("Sounds/Blaster")as AudioClip;
 		ragdollenable=transform.Find ("RagdollEnable").GetComponent<EnableRagdoll> ();
+		powerupParent = GameObject.Find ("BubblePowerUp");
 
 	}
 	void Update(){
@@ -93,19 +99,26 @@ public class BotControlScript : MonoBehaviour
 
 
 	public void Attack(string type){
-		type = "magnet";
 		if (anim.enabled == false)
 			return;
 
 
-		switch(type){
-		default:
+		switch(PlayerColliderManager.powerup){
+		case "sonicboom":
 			
 			SonicBoom ();
 
 			break;
 
-		case "bigguy":
+		case "bomb":
+			bombsLeft = 1;
+			break;
+		case "3bomb":
+			bombsLeft = 3;
+			bombsUI = GameObject.Find ("3bomb");
+			bombsUI.GetComponent<Image> ().enabled = false;
+			break;
+		case "giant":
 			StartCoroutine (BigGuyEnable ());
 			break;
 
@@ -113,8 +126,12 @@ public class BotControlScript : MonoBehaviour
 			StartCoroutine (MagnetStart ());
 
 			break;
-		
-		case "sonicboom":
+		case "2X":
+			StartCoroutine (MagnetStart ());
+
+			break;
+		default:
+			
 			PlayerColliderManager.powerup = "";
 		if (currentBaseState.fullPathHash == locoState) {
 
@@ -136,8 +153,72 @@ public class BotControlScript : MonoBehaviour
 	
 		break;
 		}
-		PlayerColliderManager.powerup = "";
 
+
+		if (PlayerColliderManager.powerup == "bomb") {
+			DropBomb (false);
+
+		} else {
+			if (bombsLeft > 0) {
+				DropBomb (true);
+
+			} 
+			if (bombsLeft == 0) {
+				LeanTween.moveY (powerupParent.transform.parent.GetComponent<RectTransform> (), 200f, .33f).setEaseInOutBounce ().setOnComplete (PowerupOff);
+			}
+
+	
+		}
+
+		if (PlayerColliderManager.powerup != "") {
+			if (bombsLeft < 1) {
+				LeanTween.moveY (powerupParent.transform.parent.GetComponent<RectTransform> (), 200f, .33f).setEaseInOutBounce ().setOnComplete(PowerupOff);
+
+			}
+
+				
+			}
+	
+			
+			PlayerColliderManager.powerup = "";
+
+
+	}
+
+	void PowerupOff(){
+		
+		for (int i = 0; i < powerupParent.transform.childCount; i++) {
+			powerupParent.transform.GetChild (i).gameObject.SetActive (false);
+		}
+	}
+
+	public void DropBomb(bool triple){
+		print("bombs left "+bombsLeft);
+		if (bombsLeft > 0) {
+			if (triple) {
+				switch (bombsLeft) {
+				case 3:
+					bombsUI.transform.GetChild (0).gameObject.SetActive (true);
+
+					break;
+				case 2:
+					bombsUI.transform.GetChild (0).gameObject.SetActive (false);
+					bombsUI.transform.GetChild (1).gameObject.SetActive (true);
+					break;
+				case 1:
+					bombsUI.transform.GetChild (0).gameObject.SetActive (false);
+					bombsUI.transform.GetChild (1).gameObject.SetActive (false);
+					bombsUI.SetActive (false);
+					bombsUI.GetComponent<Image> ().enabled = true;
+
+					break;
+
+				}
+			}
+
+			bombsLeft--;
+			GameObject bombFab = Instantiate (bomb, transform.position, Quaternion.identity) as GameObject;
+		}
 
 	}
 

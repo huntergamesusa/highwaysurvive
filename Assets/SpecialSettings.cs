@@ -10,10 +10,10 @@ public class SpecialSettings : MonoBehaviour {
 	}
 	void SetDefaults(){
 		if (!PlayerPrefs.HasKey ("animspeed")) {
-			PlayerPrefs.SetFloat ("animspeed", 1.5f);
+			PlayerPrefs.SetFloat ("animspeed", 1.25f);
 		}
 		if (!PlayerPrefs.HasKey ("carspeed")) {
-			PlayerPrefs.SetFloat ("carspeed", 20f);
+			PlayerPrefs.SetFloat ("carspeed", 15f);
 		}
 		if (!PlayerPrefs.HasKey ("MaxCarTime")) {
 			PlayerPrefs.SetFloat ("MaxCarTime", 3f);
@@ -25,7 +25,7 @@ public class SpecialSettings : MonoBehaviour {
 			PlayerPrefs.SetFloat ("maxzombiespeed", 7f);
 		}
 		if (!PlayerPrefs.HasKey ("cameraZ")) {
-			PlayerPrefs.SetFloat ("cameraZ", 0);
+			PlayerPrefs.SetFloat ("cameraZ", -7.5f);
 		}
 
 

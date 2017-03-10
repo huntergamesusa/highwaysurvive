@@ -10,10 +10,13 @@ public class SpawnCollectables : MonoBehaviour {
 	public int randomCoin;
 	bool delay=false;
 	bool spawning=false;
+	bool overstock;
+	GameObject[] gos;
 
 	void Awake(){
-		FindRoads ();
 
+		FindRoads ();
+		print (gos.Length);
 	}
 
 	public IEnumerator DelayStart(){
@@ -70,11 +73,9 @@ public class SpawnCollectables : MonoBehaviour {
 
 
 	Vector3 SpawnCoin() {
-		GameObject[] gos;
-		gos = GameObject.FindGameObjectsWithTag("road");
 		GameObject myCoin = null;
 		Vector3 coinLocation;
-		randomCoin = Random.Range (0, gos.Length);
+		randomCoin = Random.Range (1, gos.Length);
 		myCoin = gos [randomCoin];
 		coinLocation = myCoin.GetComponent<MeshRenderer>().bounds.center;
 		int temp;
@@ -107,12 +108,14 @@ public class SpawnCollectables : MonoBehaviour {
 			if (activeCoins [i] != null) {
 				
 				if (activeCoins [i].name == mycoin) {
-					
+					print (activeCoins [i].name + " vs. " + mycoin);
 					Destroy (activeCoins [i]);
 					activeCoins.Remove (activeCoins [i]);
 
-					positionCollectable.Remove ("roadcoin" + randomCoin);
-//					positionCollectable.Add ("roadcoin" + randomCoin, 0);
+					positionCollectable.Remove (activeCoins [i].name);
+
+//					positionCollectable.Remove ("roadcoin" + randomCoin);
+					positionCollectable.Add (activeCoins [i].name, 0);
 
 				}
 			}
@@ -124,10 +127,10 @@ public class SpawnCollectables : MonoBehaviour {
 	}
 
 	void FindRoads(){
-		GameObject[] gos;
 		gos = GameObject.FindGameObjectsWithTag("road");
 		int numRoads = 0;
 		foreach (GameObject go in gos) {
+//			print (numRoads);
 			numRoads++;
 			positionCollectable.Add ("roadcoin"+numRoads, 0);
 		}

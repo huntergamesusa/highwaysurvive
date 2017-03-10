@@ -9,6 +9,8 @@ public class SpawnZombies : MonoBehaviour {
 	public int randomZombie;
 	bool spawning;
 	bool delay;
+	GameObject[] gos;
+
 	void Awake(){
 		FindRoads ();
 
@@ -69,11 +71,10 @@ public class SpawnZombies : MonoBehaviour {
 
 
 	Vector3 SpawnZombie() {
-		GameObject[] gos;
-		gos = GameObject.FindGameObjectsWithTag("road");
+
 		GameObject thisZombie = null;
 		Vector3 coinLocation;
-		randomZombie = Random.Range (0, gos.Length);
+		randomZombie = Random.Range (1, gos.Length);
 		thisZombie = gos [randomZombie];
 		coinLocation = thisZombie.GetComponent<MeshRenderer>().bounds.center;
 		int temp;
@@ -112,7 +113,10 @@ public class SpawnZombies : MonoBehaviour {
 				
 					activeZombies.Remove (activeZombies [i]);
 //				}
-				positionZombies.Remove ("myzombie" + randomZombie);
+				positionZombies.Remove (activeZombies [i].name);
+				positionZombies.Add (activeZombies [i].name,0);
+
+//				positionZombies.Remove ("myzombie" + randomZombie);
 //				positionZombies.Add ("myzombie" + randomZombie,0);
 
 			}
@@ -124,7 +128,6 @@ public class SpawnZombies : MonoBehaviour {
 	}
 
 	void FindRoads(){
-		GameObject[] gos;
 		gos = GameObject.FindGameObjectsWithTag("road");
 		int numRoads = 0;
 		foreach (GameObject go in gos) {

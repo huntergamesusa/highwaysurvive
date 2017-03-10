@@ -26,13 +26,14 @@ public class GameState : MonoBehaviour {
 		GameObject spawnColl = GameObject.Find ("SpawnCollectables");
 		spawnColl.GetComponent<SpawnCollectables> ().enabled = false;
 
-		DestroyGO ("zombie");
+		DestroyGO ("zombieparent");
 		DestroyGO ("car");
 		DestroyGO ("coin");
 		DestroyGO ("powerup");
 
 		Destroy (spawnCar);
 		Destroy (spawnZom);
+		Destroy (spawnColl);
 
 		Destroy (GameObject.Find ("EmptyBody"));
 		Destroy (GameObject.Find ("Root_M"));
@@ -83,6 +84,7 @@ public class GameState : MonoBehaviour {
 
 		Destroy (spawnCar);
 		Destroy (spawnZom);
+		Destroy (spawnColl);
 
 		Destroy (GameObject.Find ("EmptyBody"));
 		Destroy (GameObject.Find ("Root_M"));

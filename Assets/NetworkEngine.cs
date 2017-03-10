@@ -131,13 +131,16 @@ public class NetworkEngine : MonoBehaviour {
 
 	public void PostCharacterData(JSONObject j){
 		
-		var URL = "http://ec2-54-165-56-14.compute-1.amazonaws.com:8080/api/products";
+//		var URL = "http://ec2-54-165-56-14.compute-1.amazonaws.com:8080/api/products";
+
+		var URL = "http://138.197.65.34:3000/api/products";
+
 		POST (URL, j , PostResult);
 
 	}
 	public static void PostPurchase(JSONObject j){
 
-		var URL = "http://ec2-54-165-56-14.compute-1.amazonaws.com:8080/api/products";
+		var URL = "http://138.197.65.34:3000/api/products";
 		POST (URL, j , PurchaseResult);
 
 	}
