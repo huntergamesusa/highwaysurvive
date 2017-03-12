@@ -86,8 +86,8 @@ public class NetworkEngine : MonoBehaviour {
 		coinText.text = myDataModel.coins.ToString ();
 
 	}
-	public static void EarnedCoin(){
-		myDataModel.coins++;
+	public static void EarnedCoin(int mult){
+		myDataModel.coins+=mult;
 		coinText.text = myDataModel.coins.ToString ();
 
 	}

@@ -27,7 +27,9 @@ public class SpecialSettings : MonoBehaviour {
 		if (!PlayerPrefs.HasKey ("cameraZ")) {
 			PlayerPrefs.SetFloat ("cameraZ", -7.5f);
 		}
-
+		if (!PlayerPrefs.HasKey ("powerupspread")) {
+			PlayerPrefs.SetInt ("powerupspread", 20);
+		}
 
 	}
 
@@ -51,6 +53,15 @@ public class SpecialSettings : MonoBehaviour {
 
 		PlayerPrefs.SetFloat ("cameraZ", float.Parse(distance));
 		GameObject.Find ("CameraPositions").SendMessage ("ChangeCamera", "ingame");
+	}
+	public void SetPowerupSpread(string distance){
+
+		PlayerPrefs.SetInt ("powerupspread", int.Parse(distance));
+	}
+
+	public void ResetPrefs(){
+		PlayerPrefs.DeleteAll ();
+		SetDefaults ();
 	}
 
 }

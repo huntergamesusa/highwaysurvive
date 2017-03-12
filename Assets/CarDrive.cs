@@ -105,14 +105,14 @@ public class CarDrive : MonoBehaviour {
 		float hitVol  = coll.relativeVelocity.magnitude * velToVol;
 		hitVol = Mathf.Clamp(hitVol,0f,.75f);
 		if (coll.relativeVelocity.magnitude < velocityClipSplit)
-		if (coll.gameObject.tag == "ragdoll") {
+		if (coll.gameObject.tag == "ragdoll"||coll.gameObject.tag == "zombie") {
 			source.PlayOneShot (impactSoft, hitVol);
 		} else {
 			source.PlayOneShot (crashSoft, hitVol);
 
 		}
 		else 
-			if (coll.gameObject.tag == "ragdoll") {
+			if (coll.gameObject.tag == "ragdoll"||coll.gameObject.tag == "zombie") {
 				source.PlayOneShot (impactHard, hitVol);
 			} else {
 				source.PlayOneShot (crashHard, hitVol);

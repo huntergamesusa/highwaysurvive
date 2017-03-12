@@ -16,7 +16,7 @@ public class SpawnCollectables : MonoBehaviour {
 	void Awake(){
 
 		FindRoads ();
-		print (gos.Length);
+//		print (gos.Length);
 	}
 
 	public IEnumerator DelayStart(){
@@ -46,7 +46,7 @@ public class SpawnCollectables : MonoBehaviour {
 	}
 
 	void InitCoin(){
-		int ranPU =  Random.Range(0,20);
+		int ranPU =  Random.Range(0,PlayerPrefs.GetInt("powerupspread"));
 		Vector3 locCoin = SpawnCoin ();
 		GameObject spawnable;
 		Quaternion myEuler;
@@ -83,8 +83,7 @@ public class SpawnCollectables : MonoBehaviour {
 
 		if(positionCollectable.TryGetValue("roadcoin"+randomCoin,out temp)){
 			if (temp == 0) {
-				positionCollectable.Remove ("roadcoin" + randomCoin);
-				positionCollectable.Add ("roadcoin" + randomCoin, 1);
+				positionCollectable["roadcoin" + randomCoin]= 1;
 
 
 			} else {
@@ -111,11 +110,14 @@ public class SpawnCollectables : MonoBehaviour {
 					print (activeCoins [i].name + " vs. " + mycoin);
 					Destroy (activeCoins [i]);
 					activeCoins.Remove (activeCoins [i]);
+					print ("before this is the positionCollectable: " + positionCollectable [mycoin]);
+					positionCollectable [mycoin] = 0;
+					print ("after this is the positionCollectable: " + positionCollectable [mycoin]);
 
-					positionCollectable.Remove (activeCoins [i].name);
+//					positionCollectable.Remove (activeCoins [i].name);
 
 //					positionCollectable.Remove ("roadcoin" + randomCoin);
-					positionCollectable.Add (activeCoins [i].name, 0);
+//					positionCollectable.Add (activeCoins [i].name, 0);
 
 				}
 			}
@@ -133,6 +135,7 @@ public class SpawnCollectables : MonoBehaviour {
 //			print (numRoads);
 			numRoads++;
 			positionCollectable.Add ("roadcoin"+numRoads, 0);
+//			print ("roadcoin" + numRoads);
 		}
 
 	}

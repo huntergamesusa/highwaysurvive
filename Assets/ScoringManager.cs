@@ -17,7 +17,10 @@ public class ScoringManager : MonoBehaviour {
 
 	public static ScoresModel myScores  = new ScoresModel (); 
 	public static Text ingamescore;
+	public static Text distanceScoreTXT;
+
 	public static int score;
+	public static float distance;
 	// Use this for initialization
 
 
@@ -27,7 +30,11 @@ public class ScoringManager : MonoBehaviour {
 		
 
 		ingamescore = GameObject.Find ("GameScore").GetComponent<Text>();
+		distanceScoreTXT = GameObject.Find ("DistanceScore").GetComponent<Text>();
+		distance = 0;
 		score = 0;
+		distanceScoreTXT.text = distance.ToString ("f0") + "M";
+
 		ingamescore.text = score.ToString("#000000000");
 
 	}
@@ -44,8 +51,21 @@ public class ScoringManager : MonoBehaviour {
 
 
 	}
+
+	public  void UpdateDistance (float mainscore) {
+//		ingamescore.transform.localScale = new Vector3 (1, 1, 1);
+		distance += mainscore;
+//		LeanTween.scale (ingamescore.GetComponent<RectTransform> (), new Vector2 (1.35f, 1.35f), .15f).setEaseInOutSine ();
+//		LeanTween.scale (ingamescore.GetComponent<RectTransform> (), new Vector2 (1f, 1f), .15f).setEaseOutSine ().setDelay(.15f);
+
+		distanceScoreTXT.text = distance.ToString ("f0") + "M";
+
+
+	}
+
 	public static void ResetScore () {
 		score = 0;
+		distance = 0;
 		ingamescore.text = score.ToString("#000000000");
 
 	}

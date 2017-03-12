@@ -82,8 +82,7 @@ public class SpawnZombies : MonoBehaviour {
 
 		if(positionZombies.TryGetValue("myzombie"+randomZombie,out temp)){
 			if (temp == 0) {
-				positionZombies.Remove ("myzombie" + randomZombie);
-				positionZombies.Add ("myzombie" + randomZombie, 1);
+				positionZombies["myzombie" + randomZombie]= 1;
 
 
 			} else {
@@ -111,10 +110,11 @@ public class SpawnZombies : MonoBehaviour {
 //				if (activeZombies [i] != null) {
 					Destroy (activeZombies [i]);
 				
-					activeZombies.Remove (activeZombies [i]);
+				activeZombies.Remove (activeZombies [i]);
+				positionZombies [thisZombie] = 0;
 //				}
-				positionZombies.Remove (activeZombies [i].name);
-				positionZombies.Add (activeZombies [i].name,0);
+//				positionZombies.Remove (activeZombies [i].name);
+//				positionZombies.Add (activeZombies [i].name,0);
 
 //				positionZombies.Remove ("myzombie" + randomZombie);
 //				positionZombies.Add ("myzombie" + randomZombie,0);

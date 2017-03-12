@@ -5,6 +5,8 @@ using UnityEngine.UI;
 public class PlayerColliderManager : MonoBehaviour {
 	public AudioClip coinsound;
 	public static string powerup;
+	public AudioClip beep;
+	public AudioClip finish;
 	GameObject powerupParent;
 	int increment=0;
 	// Use this for initialization
@@ -44,6 +46,7 @@ public class PlayerColliderManager : MonoBehaviour {
 		powerupParent.transform.GetChild (increment).gameObject.SetActive (true);
 			powerupParent.transform.localScale = new Vector3 (1.2f, 1.2f, 1.2f);
 		increment++;
+			GetComponent<AudioSource> ().PlayOneShot (beep);
 			yield return new WaitForSecondsRealtime(.03f);
 		}
 		if (increment > powerupParent.transform.childCount) {
@@ -52,6 +55,8 @@ public class PlayerColliderManager : MonoBehaviour {
 			increment--;
 		}
 		powerup = powerupParent.transform.GetChild (increment).name;
+		GetComponent<AudioSource> ().PlayOneShot (finish);
+
 		print ("powerup is " + powerup);
 		powerupParent.transform.localScale = new Vector3 (1f, 1f, 1f);
 
@@ -63,13 +68,22 @@ public class PlayerColliderManager : MonoBehaviour {
 		switch (col.tag){
 
 		case "coin":
-			NetworkEngine.EarnedCoin ();
 			GetComponent<AudioSource> ().PlayOneShot (coinsound);
 			GameObject.Find ("SpawnCollectables").SendMessage ("DestroyCoin", col.name);
-			ScoringManager.UpdateScore (25, 1);
+			int mult;
+			if (BotControlScript.doublecoins) {
+				mult = 2;
+			} else {
+				mult=1;
+			}
+			NetworkEngine.EarnedCoin (mult);
+
+			ScoringManager.UpdateScore (25, mult);
 			print (col.name);
 			break;
 		case "powerup":
+			StartCoroutine (RunPowerUpLottery ());
+
 			GameObject.Find ("SpawnCollectables").SendMessage ("DestroyCoin", col.name);
 
 
