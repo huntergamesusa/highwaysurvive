@@ -28,7 +28,10 @@ public class SpecialSettings : MonoBehaviour {
 			PlayerPrefs.SetFloat ("cameraZ", -7.5f);
 		}
 		if (!PlayerPrefs.HasKey ("powerupspread")) {
-			PlayerPrefs.SetInt ("powerupspread", 20);
+			PlayerPrefs.SetInt ("powerupspread", 8);
+		}
+		if (!PlayerPrefs.HasKey ("pausehit")) {
+			PlayerPrefs.SetFloat ("pausehit", 0);
 		}
 
 	}
@@ -57,6 +60,9 @@ public class SpecialSettings : MonoBehaviour {
 	public void SetPowerupSpread(string distance){
 
 		PlayerPrefs.SetInt ("powerupspread", int.Parse(distance));
+	}
+	public void PauseHit (string input){
+		PlayerPrefs.SetFloat ("pausehit", float.Parse(input));
 	}
 
 	public void ResetPrefs(){

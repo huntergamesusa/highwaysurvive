@@ -8,7 +8,7 @@ public class FollowZ : MonoBehaviour {
 
 	// Use this for initialization
 	void Awake () {
-		target = GameObject.Find ("EmptyBody").transform.GetChild (0).gameObject;
+//		target = GameObject.Find ("EmptyBody").transform.GetChild (0).gameObject;
 	}
 
 	// Update is called once per frame

@@ -28,6 +28,12 @@ public class PlayerColliderManager : MonoBehaviour {
 
 	}
 
+	public void StopLottery(){
+		StopCoroutine (RunPowerUpLottery ());
+		powerup = "";
+
+	}
+
 	IEnumerator RunPowerUpLottery(){
 		LeanTween.moveY (powerupParent.transform.parent.GetComponent<RectTransform> (), -5f, .33f).setEaseInOutBounce ();
 		increment = Random.Range (0, powerupParent.transform.childCount);
@@ -92,6 +98,7 @@ public class PlayerColliderManager : MonoBehaviour {
 		}
 
 	}
+
 
 
 

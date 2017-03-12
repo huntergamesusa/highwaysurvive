@@ -32,7 +32,7 @@ public class EnableRagdoll : MonoBehaviour {
 
 	public IEnumerator PauseTime(){
 		Time.timeScale = 0f;
-		yield return new WaitForSecondsRealtime(.1f);
+		yield return new WaitForSecondsRealtime(PlayerPrefs.GetFloat("pausehit"));
 		Time.timeScale = 1;
 
 	}

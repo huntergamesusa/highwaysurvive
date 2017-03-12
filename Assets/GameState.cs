@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class GameState : MonoBehaviour {
 	public GameObject currentPlayer;
 	public Transform startTrans;
@@ -11,6 +11,9 @@ public class GameState : MonoBehaviour {
 	public GameObject spawnP;
 	public GameObject joystick;
 	public GameObject selectCanvas;
+	public GameObject MainMenu;
+	public GameObject powerupParent;
+	public Text[] textObjects;
 
 	void Awake(){
 		
@@ -20,6 +23,8 @@ public class GameState : MonoBehaviour {
 	public void Restart(){
 		print ("restart");
 //		System.GC.Collect ();
+		OverridePutBackPowerup ();
+		FollowZ.target = null;
 
 		ScoringManager.ResetScore ();
 		GameObject spawnZom = GameObject.Find ("SpawnZombies");
@@ -35,6 +40,7 @@ public class GameState : MonoBehaviour {
 		DestroyGO ("car");
 		DestroyGO ("coin");
 		DestroyGO ("powerup");
+		DestroyGO ("tnt");
 
 		Destroy (spawnCar);
 		Destroy (spawnZom);
@@ -47,10 +53,22 @@ public class GameState : MonoBehaviour {
 		currentPlayer = newPlayer;
 		GameObject.Find ("PartSelectionController").SendMessage("RestartCharacter",currentPlayer.GetComponent<CharacterParts>());
 		CameraAnimations.target = currentPlayer.transform.GetChild (1).gameObject;
-		FollowZ.target = currentPlayer.transform.GetChild (0).gameObject;
+//		FollowZ.target = currentPlayer.transform.GetChild (0).gameObject;
 		joystick.SetActive (false);
-		selectCanvas.SetActive (true);
-		CameraAnimations.ChangeCamera ("menu");
+		MainMenu.SetActive (true);
+		CameraAnimations.ChangeCamera ("start");
+		EnableAlphaText (false, textObjects);
+
+
+	}
+
+	public void MakeSelection(){
+		GameObject.Find ("PartSelectionController").SendMessage("RestartCharacter",currentPlayer.GetComponent<CharacterParts>());
+
+	}
+	public void ChangeMyCamera(string cam){
+
+		CameraAnimations.ChangeCamera (cam);
 
 	}
 
@@ -58,7 +76,6 @@ public class GameState : MonoBehaviour {
 //		System.GC.Collect ();
 
 		ScoringManager.ResetScore ();
-		GameObject.Find ("PartSelectionController").SendMessage("RestartCharacter",currentPlayer.GetComponent<CharacterParts>());
 //		GameObject.Find ("SpawnZombies").GetComponent<SpawnZombies> ().enabled = true;
 //		GameObject.Find ("SpawnCars").GetComponent<SpawnCars> ().enabled = true;
 		GameObject spawningZ = Instantiate (spawnZ, transform.position, Quaternion.identity)as GameObject;
@@ -70,16 +87,19 @@ public class GameState : MonoBehaviour {
 		joystick.SetActive (true);
 		selectCanvas.SetActive (false);
 		Debug.Log (currentPlayer.name);
+		FollowZ.target = currentPlayer.transform.GetChild (0).gameObject;
+
 		currentPlayer.GetComponent<BotControlScript> ().ReceiveJoystick (joystick.transform.GetChild (1), joystick.transform.GetChild (0));
 
 		currentPlayer.GetComponent<BotControlScript> ().enabled = true;
 
 		CameraAnimations.ChangeCamera ("ingame");
-
+		EnableAlphaText (true, textObjects);
 	}
 
 	public void ReplaySameGame(){
 		print ("replay");
+		OverridePutBackPowerup ();
 //		System.GC.Collect ();
 		GameObject spawnZom = GameObject.Find ("SpawnZombies");
 		spawnZom.GetComponent<SpawnZombies> ().enabled = false;
@@ -93,6 +113,7 @@ public class GameState : MonoBehaviour {
 		DestroyGO ("car");
 		DestroyGO ("coin");
 		DestroyGO ("powerup");
+		DestroyGO ("tnt");
 
 		Destroy (spawnCar);
 		Destroy (spawnZom);
@@ -133,5 +154,22 @@ public class GameState : MonoBehaviour {
 		}
 
 	}
+
+	void EnableAlphaText(bool onoff, Text[] arr){
+		for (int i = 0; i < arr.Length; i++) {
+			arr [i].enabled = onoff;
+		}
+	}
+
+	public void OverridePutBackPowerup(){
+		LeanTween.cancel (powerupParent);
+		currentPlayer.SendMessage ("StopLottery");
+		LeanTween.moveY (powerupParent.GetComponent<RectTransform> (), 200f, .01f);
+		for (int i = 0; i < powerupParent.transform.GetChild(0).childCount; i++) {
+			powerupParent.transform.GetChild (0).GetChild(i).gameObject.SetActive (false);
+		}
+
+	}
+
 
 }

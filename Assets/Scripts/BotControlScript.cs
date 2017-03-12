@@ -302,12 +302,12 @@ IEnumerator MagnetStart(){
 		float v = dist;
 		anim.SetFloat("Speed", v);							// set our animator's float parameter 'Speed' equal to the vertical input axis				
 		if (isBig) {
-			anim.speed = PlayerPrefs.GetFloat ("animspeed")/1.5f;		
+			anim.speed = PlayerPrefs.GetFloat ("animspeed")/1.25f;		
 		} else {
 			anim.speed = PlayerPrefs.GetFloat ("animspeed");		
 
 		}
-//		theScoringManager.UpdateDistance (anim.GetFloat("Speed")/50);
+		theScoringManager.UpdateDistance (anim.GetFloat("Speed")/50);
 		currentBaseState = anim.GetCurrentAnimatorStateInfo(0);	// set our currentState variable to the current state of the Base Layer (0) of animation
 
 
@@ -320,9 +320,9 @@ IEnumerator MagnetStart(){
 		if (currentBaseState.fullPathHash == locoState) {
 //			footstep.volume = 1;
 			if (isBig) {
-//				footstep.pitch = anim.GetFloat ("Speed")/1.5f;
+				footstep.pitch = anim.GetFloat ("Speed")/1.25f;
 			} else {
-//				footstep.pitch = anim.GetFloat ("Speed");
+				footstep.pitch = anim.GetFloat ("Speed");
 
 			}
 			if (myWeaponParent.transform.GetChild (0) != null) {
