@@ -79,6 +79,7 @@ public class PartSelectionController : MonoBehaviour
     List<string> armPartsKeys = new List<string>();
     List<string> legPartsKeys = new List<string>();
 
+
 	public Dictionary<string, int> headPrices = new Dictionary<string, int>();
 	public Dictionary<string, int> hairPrices = new Dictionary<string, int>();
 	public Dictionary<string, int> headAccessPrices = new Dictionary<string, int>();
@@ -270,78 +271,82 @@ public class PartSelectionController : MonoBehaviour
 	}
 
 	void CheckDataAfterPost(string checkString){
+//
+//		switch (checkString) {
+//		case "head":
+//			PlayerPrefs.SetInt ("Head", purchaseIndex);
+//			break;
+//		case "hair":
+//			PlayerPrefs.SetInt ("Hair", purchaseIndex);
+//
+//			break;
+//		case "headaccess":
+//			PlayerPrefs.SetInt ("HairAccess", purchaseIndex);
+//
+//			break;
+//		case "outfit":
+//			PlayerPrefs.SetInt ("Outfit", purchaseIndex);
+//
+//			break;
+//		case "weapon":
+//			PlayerPrefs.SetInt ("Weapon", purchaseIndex);
+//
+//			break;
+//		case "shield":
+//			PlayerPrefs.SetInt ("Shield", purchaseIndex);
+//
+//			break;
+//		default:
+//			break;
+//		
+//		}
 
-		switch (checkString) {
-		case "head":
-			PlayerPrefs.SetInt ("Head", purchaseIndex);
-			break;
-		case "hair":
-			PlayerPrefs.SetInt ("Hair", purchaseIndex);
-
-			break;
-		case "headaccess":
-			PlayerPrefs.SetInt ("HairAccess", purchaseIndex);
-
-			break;
-		case "outfit":
-			PlayerPrefs.SetInt ("Outfit", purchaseIndex);
-
-			break;
-		case "weapon":
-			PlayerPrefs.SetInt ("Weapon", purchaseIndex);
-
-			break;
-		case "shield":
-			PlayerPrefs.SetInt ("Shield", purchaseIndex);
-
-			break;
-		default:
-			break;
-		
-		}
-
-
-		if (!PlayerPrefs.HasKey ("Head")) {
-			PlayerPrefs.SetInt ("Head", 0);
-		}
-		if (!PlayerPrefs.HasKey ("Outfit")) {
-			PlayerPrefs.SetInt ("Outfit", 0);
-		}
-		CheckHeadData (collections.GetHead (headKeys [PlayerPrefs.GetInt ("Head")]).name);
-		CheckOutfitData (collections.GetChest (chestKeys [PlayerPrefs.GetInt ("Outfit")]).name);
-
-
-
-		if (PlayerPrefs.HasKey ("Hair")) {
-			CheckHairData (collections.GetHair (hairKeys [PlayerPrefs.GetInt ("Hair")]).name);
-
-		} else {
-			CheckHairData (collections.GetHair (hairKeys [hairIndex]).name);
-		}
-		if (PlayerPrefs.HasKey ("HairAccess")) {
-			CheckHeadAccData (collections.GetHeadAccesories (headAccesoriesKeys [PlayerPrefs.GetInt ("HairAccess")]).name);
-
-		} else {
-			CheckHeadAccData (collections.GetHeadAccesories (headAccesoriesKeys [headAccesoriesIndex]).name);
-
-
-		}
-		if (PlayerPrefs.HasKey ("Weapon")) {
-			CheckWeaponData (collections.GetWeapon (weaponKeys [PlayerPrefs.GetInt ("Weapon")]).name);
-
-		} else {
-			CheckWeaponData (collections.GetWeapon (weaponKeys [rightWeaponIndex]).name);
-
-
-		}
-		if (PlayerPrefs.HasKey ("Shield")) {
-			CheckShieldData (collections.GetShield (shieldKeys [PlayerPrefs.GetInt ("Shield")]).name);
-
-		} else {
-			CheckShieldData (collections.GetShield (shieldKeys [leftShieldIndex]).name);
-
-
-		}
+//
+//		if (!PlayerPrefs.HasKey ("Head")) {
+//			PlayerPrefs.SetInt ("Head", 0);
+//		}
+//		if (!PlayerPrefs.HasKey ("Outfit")) {
+//			PlayerPrefs.SetInt ("Outfit", 0);
+//		}
+//		if (!PlayerPrefs.HasKey ("Weapon")) {
+//			PlayerPrefs.SetInt ("Weapon", 0);
+	
+//		}
+//		CheckHeadData (collections.GetHead (headKeys [PlayerPrefs.GetInt ("Head")]).name);
+//		CheckOutfitData (collections.GetChest (chestKeys [PlayerPrefs.GetInt ("Outfit")]).name);
+//
+//
+//
+//		if (PlayerPrefs.HasKey ("Hair")) {
+//			CheckHairData (collections.GetHair (hairKeys [PlayerPrefs.GetInt ("Hair")]).name);
+//
+//		} else {
+//			CheckHairData (collections.GetHair (hairKeys [hairIndex]).name);
+//		}
+//		if (PlayerPrefs.HasKey ("HairAccess")) {
+//			CheckHeadAccData (collections.GetHeadAccesories (headAccesoriesKeys [PlayerPrefs.GetInt ("HairAccess")]).name);
+//
+//		} else {
+//			CheckHeadAccData (collections.GetHeadAccesories (headAccesoriesKeys [headAccesoriesIndex]).name);
+//
+//
+//		}
+//		if (PlayerPrefs.HasKey ("Weapon")) {
+//			CheckWeaponData (collections.GetWeapon (weaponKeys [PlayerPrefs.GetInt ("Weapon")]).name);
+//
+//		} else {
+//			CheckWeaponData (collections.GetWeapon (weaponKeys [rightWeaponIndex]).name);
+//
+//
+//		}
+//		if (PlayerPrefs.HasKey ("Shield")) {
+//			CheckShieldData (collections.GetShield (shieldKeys [PlayerPrefs.GetInt ("Shield")]).name);
+//
+//		} else {
+//			CheckShieldData (collections.GetShield (shieldKeys [leftShieldIndex]).name);
+//
+//
+//		}
 
 
 
@@ -363,54 +368,75 @@ public class PartSelectionController : MonoBehaviour
 		return 600;
 	}
 
+	int GetIndex(List<string> keys, string keylookup){
+//		return keys.FindIndex (SystemforeachPredicate<>(keylookup));
+		for (int i = 0; i < keys.Count; i++) {
+			if (keys [i].Contains(keylookup)) {
+				return i;
+			}
+		}
+		return 0;
+
+
+	}
+
+	void Update(){
+
+		if (Input.GetKeyUp (KeyCode.N)) {
+			string weapstring = "Weapon001";
+			weapstring = weapstring.Replace (collections.weaponKey, "");
+			print(GetIndex (weaponKeys,weapstring));
+			print (collections.GetHead (headKeys [0]));
+
+	}
+	}
+
 	public void EnableCharacterSelection(){
 
-		if (!PlayerPrefs.HasKey ("Head")) {
-			PlayerPrefs.SetInt ("Head", 0);
-		}
-		if (!PlayerPrefs.HasKey ("Outfit")) {
-			PlayerPrefs.SetInt ("Outfit", 0);
-		}
 
 
+		headIndex = GetIndex (headKeys, PlayerPrefs.GetString ("Head").Replace(collections.headKey,""));
+		string chestString;
+		chestString = PlayerPrefs.GetString ("Outfit").Replace (collections.chestKey, "");
+		chestIndex = GetIndex (chestKeys,chestString);
+		armPartsIndex = GetIndex (chestKeys,chestString);
+		legPartsIndex = GetIndex (chestKeys,chestString);
+		lowerSpineIndex = GetIndex (chestKeys,chestString);
+		spineIndex = GetIndex (chestKeys,chestString);
 
-		headIndex = PlayerPrefs.GetInt ("Head");
-		chestIndex = PlayerPrefs.GetInt ("Outfit");
-		armPartsIndex = PlayerPrefs.GetInt ("Outfit");
-		legPartsIndex = PlayerPrefs.GetInt ("Outfit");
-		lowerSpineIndex = PlayerPrefs.GetInt ("Outfit");
-		spineIndex = PlayerPrefs.GetInt ("Outfit");
+		characterParts.ChangeHead(collections.GetHead(headKeys[headIndex]));
+		characterParts.ChangeChest(collections.GetChest(chestKeys[chestIndex]));
+		characterParts.ChangeArmParts(collections.GetArmParts(armPartsKeys[chestIndex]));
+		characterParts.ChangeLegParts(collections.GetLegParts(legPartsKeys[chestIndex]));
+		characterParts.ChangeLowerSpine(collections.GetLowerSpine(lowerSpineKeys[chestIndex]));
+		characterParts.ChangeSpine(collections.GetSpine(spineKeys[chestIndex]));
 
-		characterParts.ChangeHead(collections.GetHead(headKeys[PlayerPrefs.GetInt ("Head")]));
-		characterParts.ChangeChest(collections.GetChest(chestKeys[PlayerPrefs.GetInt ("Outfit")]));
-		characterParts.ChangeArmParts(collections.GetArmParts(armPartsKeys[PlayerPrefs.GetInt ("Outfit")]));
-		characterParts.ChangeLegParts(collections.GetLegParts(legPartsKeys[PlayerPrefs.GetInt ("Outfit")]));
-		characterParts.ChangeLowerSpine(collections.GetLowerSpine(lowerSpineKeys[PlayerPrefs.GetInt ("Outfit")]));
-		characterParts.ChangeSpine(collections.GetSpine(spineKeys[PlayerPrefs.GetInt ("Outfit")]));
-		if (PlayerPrefs.HasKey ("Hair")) {
-			hairIndex = PlayerPrefs.GetInt ("Hair");
-			characterParts.ChangeHair (collections.GetHair (hairKeys [PlayerPrefs.GetInt ("Hair")]));
+		if (PlayerPrefs.GetString ("Hair")!="") {
+			hairIndex = GetIndex (hairKeys,PlayerPrefs.GetString ("Hair").Replace(collections.hairKey,""));
+
+			characterParts.ChangeHair (collections.GetHair (hairKeys [hairIndex]));
 		} else {
 			characterParts.RemoveHair ();
 		}
-		if (PlayerPrefs.HasKey ("HairAccess")) {
-			headAccesoriesIndex = PlayerPrefs.GetInt ("HairAccess");
-			characterParts.ChangeHeadAccesories (collections.GetHeadAccesories (headAccesoriesKeys [PlayerPrefs.GetInt ("HairAccess")]));
+		if (PlayerPrefs.GetString ("HairAccess")!="") {
+			hairIndex = GetIndex (hairKeys,PlayerPrefs.GetString ("HairAccess").Replace(collections.hairKey,""));
+			characterParts.ChangeHeadAccesories (collections.GetHeadAccesories (headAccesoriesKeys [hairIndex]));
 		} else {
 			characterParts.RemoveHeadAccesories ();
 
 		}
-		if (PlayerPrefs.HasKey ("Weapon")) {
-			rightWeaponIndex = PlayerPrefs.GetInt ("Weapon");
+		if (PlayerPrefs.GetString ("Weapon")!="") {
+			rightWeaponIndex = GetIndex (weaponKeys,PlayerPrefs.GetString ("Weapon").Replace(collections.weaponKey,"")) ;
 
-			characterParts.ChangeRightWeapon (collections.GetWeapon (weaponKeys [PlayerPrefs.GetInt ("Weapon")]));
+			characterParts.ChangeRightWeapon (collections.GetWeapon (weaponKeys [rightWeaponIndex]));
 		} else {
 			characterParts.RemoveRightWeapon ();
 
 		}
-		if (PlayerPrefs.HasKey ("Shield")) {
-			leftShieldIndex = PlayerPrefs.GetInt ("Shield");
-			characterParts.ChangeLeftShield (collections.GetShield (shieldKeys [PlayerPrefs.GetInt ("Shield")]));
+		if (PlayerPrefs.GetString ("Shield")!="") {
+			leftShieldIndex = GetIndex (shieldKeys,PlayerPrefs.GetString ("Shield").Replace(collections.shieldKey,""));
+
+			characterParts.ChangeLeftShield (collections.GetShield (shieldKeys [leftShieldIndex]));
 		} else {
 			characterParts.RemoveLeftShield ();
 
@@ -489,7 +515,8 @@ public class PartSelectionController : MonoBehaviour
         headIndex = GetPartKeyIndex(isPrev, headIndex, headKeys);
 		CheckHeadData (collections.GetHead (headKeys [headIndex]).name);
 		if (headAvailable) {
-			PlayerPrefs.SetInt ("Head", headIndex);
+			print (collections.GetHead (headKeys [headIndex]).name);
+			PlayerPrefs.SetString ("Head",collections.GetHead (headKeys [headIndex]).name);
 		}
         characterParts.ChangeHead(collections.GetHead(headKeys[headIndex]));
     }
@@ -499,7 +526,7 @@ public class PartSelectionController : MonoBehaviour
         hairIndex = GetPartKeyIndex(isPrev, hairIndex, hairKeys);
 		CheckHairData (collections.GetHair (hairKeys [hairIndex]).name);
 		if (hairAvailable) {
-			PlayerPrefs.SetInt ("Hair", hairIndex);
+			PlayerPrefs.SetString ("Hair", collections.GetHair (hairKeys [hairIndex]).name);
 		}
         characterParts.ChangeHair(collections.GetHair(hairKeys[hairIndex]));
     }
@@ -509,7 +536,7 @@ public class PartSelectionController : MonoBehaviour
         headAccesoriesIndex = GetPartKeyIndex(isPrev, headAccesoriesIndex, headAccesoriesKeys);
 		CheckHeadAccData (collections.GetHeadAccesories (headAccesoriesKeys [headAccesoriesIndex]).name);
 		if (headAccAvailable) {
-			PlayerPrefs.SetInt ("HairAccess", headAccesoriesIndex);
+			PlayerPrefs.SetString ("HairAccess", collections.GetHeadAccesories (headAccesoriesKeys [headAccesoriesIndex]).name);
 		}
         characterParts.ChangeHeadAccesories(collections.GetHeadAccesories(headAccesoriesKeys[headAccesoriesIndex]));
     }
@@ -537,7 +564,7 @@ public class PartSelectionController : MonoBehaviour
         leftShieldIndex = GetPartKeyIndex(isPrev, leftShieldIndex, shieldKeys);
 		CheckShieldData (collections.GetShield (shieldKeys [leftShieldIndex]).name);
 		if (shieldAvailable) {
-			PlayerPrefs.SetInt ("Shield", leftShieldIndex);
+			PlayerPrefs.SetString ("Shield", collections.GetShield (shieldKeys [leftShieldIndex]).name);
 		}
         characterParts.ChangeLeftShield(collections.GetShield(shieldKeys[leftShieldIndex]));
     }
@@ -559,7 +586,7 @@ public class PartSelectionController : MonoBehaviour
         rightWeaponIndex = GetPartKeyIndex(isPrev, rightWeaponIndex, weaponKeys);
 		CheckWeaponData (collections.GetWeapon (weaponKeys [rightWeaponIndex]).name);
 		if (weaponAvailable) {
-			PlayerPrefs.SetInt ("Weapon", rightWeaponIndex);
+			PlayerPrefs.SetString ("Weapon", collections.GetWeapon (weaponKeys [rightWeaponIndex]).name);
 		}
         characterParts.ChangeRightWeapon(collections.GetWeapon(weaponKeys[rightWeaponIndex]));
     }
@@ -569,7 +596,7 @@ public class PartSelectionController : MonoBehaviour
         chestIndex = GetPartKeyIndex(isPrev, chestIndex, chestKeys);
 		CheckOutfitData (collections.GetChest (chestKeys [chestIndex]).name);
 		if (outfitAvailable) {
-			PlayerPrefs.SetInt ("Outfit", chestIndex);
+			PlayerPrefs.SetString ("Outfit", collections.GetChest (chestKeys [chestIndex]).name);
 		}
 
         characterParts.ChangeChest(collections.GetChest(chestKeys[chestIndex]));
@@ -633,206 +660,115 @@ public class PartSelectionController : MonoBehaviour
 	}
 
 		void CheckHeadData(string checkkey){
-		if (NetworkEngine.myDataModel.ownedItems != null) {
 			headAvailable = false;
 			headCostButton.SetActive (true);
 
-				foreach (string obj in NetworkEngine.myDataModel.ownedItems) {
-				if (checkkey != obj) {					
-					int costInt = CheckPricing (checkkey, headPrices);
-					headCostButton.transform.GetChild(0).GetComponent<Text>().text =costInt.ToString() ;
-				}
-				if (checkkey == obj) {
+			if (PlayerPrefs.GetInt(checkkey) >0){
+
 					headAvailable = true;
 					headCostButton.SetActive (false);
 				}
-				}
+				else {
+					headCostButton.transform.GetChild(0).GetComponent<Text>().text ="$0.99" ;
 
+				
 		}
 	}
 	void CheckHairData(string checkkey){
-		if (NetworkEngine.myDataModel.ownedItems != null) {
 			hairAvailable = false;
 			hairCostButton.SetActive (true);
-			foreach (string obj in NetworkEngine.myDataModel.ownedItems) {
-				if (checkkey != obj) {					
-					int costInt = CheckPricing (checkkey, hairPrices);
-					hairCostButton.transform.GetChild(0).GetComponent<Text>().text =costInt.ToString() ;
-				}
-				if (checkkey == obj) {
-					hairAvailable = true;
-					hairCostButton.SetActive (false);
-				}
+
+			if (PlayerPrefs.GetInt(checkkey) >0){
+				hairAvailable = true;
+				hairCostButton.SetActive (false);
+			} else {
+				hairCostButton.transform.GetChild (0).GetComponent<Text> ().text = "$0.99";
+
 			}
-		}
+				
+
 	}
 	void CheckHeadAccData(string checkkey){
-		if (NetworkEngine.myDataModel.ownedItems != null) {
 			headAccAvailable = false;
 			headAccCostButton.SetActive (true);
-			foreach (string obj in NetworkEngine.myDataModel.ownedItems) {
-				if (checkkey != obj) {					
-					int costInt = CheckPricing (checkkey, headAccessPrices);
-					headAccCostButton.transform.GetChild(0).GetComponent<Text>().text =costInt.ToString() ;
-				}
-				if (checkkey == obj) {
-					headAccAvailable = true;
-					headAccCostButton.SetActive (false);
-				}
-			}
+		if (PlayerPrefs.GetInt(checkkey) >0){
+				headAccAvailable = true;
+				headAccCostButton.SetActive (false);
+			} else {
+				headAccCostButton.transform.GetChild (0).GetComponent<Text> ().text = "$0.99";
+
+
 		}
 	}
 	void CheckOutfitData(string checkkey){
-		if (NetworkEngine.myDataModel.ownedItems != null) {
 			outfitAvailable = false;
 			outfitCostButton.SetActive (true);
-			foreach (string obj in NetworkEngine.myDataModel.ownedItems) {
-				if (checkkey != obj) {					
-					int costInt = CheckPricing (checkkey, outfitPrices);
-					outfitCostButton.transform.GetChild(0).GetComponent<Text>().text =costInt.ToString() ;
-				}
-				if (checkkey == obj) {
-					outfitAvailable = true;
-					outfitCostButton.SetActive (false);
-				}
-			}
+		if (PlayerPrefs.GetInt(checkkey) >0){
+				outfitAvailable = true;
+				outfitCostButton.SetActive (false);
+			} else {
+				outfitCostButton.transform.GetChild (0).GetComponent<Text> ().text = "$0.99";
+
+
 		}
 	}
 	void CheckWeaponData(string checkkey){
-		if (NetworkEngine.myDataModel.ownedItems != null) {
 			weaponAvailable = false;
 			weaponCostButton.SetActive (true);
-			foreach (string obj in NetworkEngine.myDataModel.ownedItems) {
-				if (checkkey != obj) {					
-					int costInt = CheckPricing (checkkey, outfitPrices);
-					weaponCostButton.transform.GetChild(0).GetComponent<Text>().text =costInt.ToString() ;
-				}
-				if (checkkey == obj) {
-					weaponAvailable = true;
-					weaponCostButton.SetActive (false);
-				}
-			}
+			if (PlayerPrefs.GetInt(checkkey) >0){
+				weaponAvailable = true;
+				weaponCostButton.SetActive (false);
+			} else {
+				weaponCostButton.transform.GetChild (0).GetComponent<Text> ().text = "$0.99";
+
+			
 		}
 	}
 	void CheckShieldData(string checkkey){
-		if (NetworkEngine.myDataModel.ownedItems != null) {
 			shieldAvailable = false;
 			shieldCostButton.SetActive (true);
-			foreach (string obj in NetworkEngine.myDataModel.ownedItems) {
-				if (checkkey != obj) {					
-					int costInt = CheckPricing (checkkey, shieldPrices);
-					shieldCostButton.transform.GetChild(0).GetComponent<Text>().text =costInt.ToString() ;
-				}
-				if (checkkey == obj) {
-					shieldAvailable = true;
-					shieldCostButton.SetActive (false);
-				}
-			}
+		if (PlayerPrefs.GetInt(checkkey) >0){
+				shieldAvailable = true;
+				shieldCostButton.SetActive (false);
+			} else {
+				shieldCostButton.transform.GetChild (0).GetComponent<Text> ().text = "$0.99";
+
+
 		}
 	}
 
-	public void MakePurchase(string key){
-		bool hasfunds=false;
-		int cost;
+	public void MakePurchase(string key,int index){
 		switch(key){
 		case "head":
-			hasfunds = CheckFunds (collections.GetHead (headKeys [headIndex]).name, headPrices);
-			cost = CheckPricing (collections.GetHead (headKeys [headIndex]).name, headPrices);
-			if (hasfunds) {
-				NetworkEngine.isPurchasing = true;
-				NetworkEngine.myDataModel.ownedItems.Add (collections.GetHead (headKeys [headIndex]).name);
-				NetworkEngine.myDataModel.coins -= cost;
-				NetworkEngine.storedPurchasable = collections.GetHead (headKeys [headIndex]).name;
-				NetworkEngine.storedCost = cost;
-				JSONObject myJson = new JSONObject (JsonUtility.ToJson (NetworkEngine.myDataModel).ToString ());
-				purchaseIndex = headIndex;
-				purchaseKey = key;
-				NetworkEngine.PostPurchase (myJson);
-			}
+//				OwnedManager.myDataModel.ownedItems.Add (collections.GetHead (headKeys [headIndex]).name);
+//				OwnedManager.myDataModel.coins -= cost;
+//				OwnedManager.storedPurchasable = collections.GetHead (headKeys [headIndex]).name;
+//				OwnedManager.storedCost = cost;
+//				JSONObject myJson = new JSONObject (JsonUtility.ToJson (OwnedManager.myDataModel).ToString ());
+//				purchaseIndex = headIndex;
+//				purchaseKey = key;
+//				OwnedManager.PostPurchase (myJson);
+//
 		break;
 		case "hair":
-			hasfunds = CheckFunds (collections.GetHair (hairKeys [hairIndex]).name, hairPrices);
-			cost = CheckPricing (collections.GetHair (hairKeys [hairIndex]).name, hairPrices);
-			if (hasfunds) {
-				NetworkEngine.isPurchasing = true;
-				NetworkEngine.myDataModel.ownedItems.Add (collections.GetHair (hairKeys [hairIndex]).name);
-				NetworkEngine.myDataModel.coins -= cost;
-				NetworkEngine.storedPurchasable = collections.GetHair (hairKeys [hairIndex]).name;
-				NetworkEngine.storedCost = cost;
-				JSONObject myJson = new JSONObject (JsonUtility.ToJson (NetworkEngine.myDataModel).ToString ());
-				purchaseIndex = hairIndex;
-				purchaseKey = key;
-				NetworkEngine.PostPurchase (myJson);
-			}
+	
 			break;
 		case "headaccess":
-			hasfunds = CheckFunds (collections.GetHeadAccesories (headAccesoriesKeys [headAccesoriesIndex]).name, headAccessPrices);
-			cost = CheckPricing (collections.GetHeadAccesories (headAccesoriesKeys [headAccesoriesIndex]).name, headAccessPrices);
-			if (hasfunds) {
-				NetworkEngine.isPurchasing = true;
-				NetworkEngine.myDataModel.ownedItems.Add (collections.GetHeadAccesories (headAccesoriesKeys [headAccesoriesIndex]).name);
-				NetworkEngine.myDataModel.coins -= cost;
-				NetworkEngine.storedPurchasable = collections.GetHeadAccesories (headAccesoriesKeys [headAccesoriesIndex]).name;
-				NetworkEngine.storedCost = cost;
-				JSONObject myJson = new JSONObject (JsonUtility.ToJson (NetworkEngine.myDataModel).ToString ());
-				purchaseIndex = headAccesoriesIndex;
-				purchaseKey = key;
-				NetworkEngine.PostPurchase (myJson);
-			}
+	
 			break;
 		case "outfit":
-			hasfunds = CheckFunds (collections.GetChest (chestKeys [chestIndex]).name, outfitPrices);
-			cost = CheckPricing (collections.GetChest (chestKeys [chestIndex]).name, outfitPrices);
-			if (hasfunds) {
-				NetworkEngine.isPurchasing = true;
-				NetworkEngine.myDataModel.ownedItems.Add (collections.GetChest (chestKeys [chestIndex]).name);
-				NetworkEngine.myDataModel.coins -= cost;
-				NetworkEngine.storedPurchasable = collections.GetChest (chestKeys [chestIndex]).name;
-				NetworkEngine.storedCost = cost;
-				JSONObject myJson = new JSONObject (JsonUtility.ToJson (NetworkEngine.myDataModel).ToString ());
-				purchaseIndex = chestIndex;
-				purchaseKey = key;
-				NetworkEngine.PostPurchase (myJson);
-			}
+
 			break;
 		case "weapon":
-			hasfunds = CheckFunds (collections.GetWeapon (weaponKeys [rightWeaponIndex]).name, weaponPrices);
-			cost = CheckPricing (collections.GetWeapon (weaponKeys [rightWeaponIndex]).name, weaponPrices);
-			if (hasfunds) {
-				NetworkEngine.isPurchasing = true;
-				NetworkEngine.myDataModel.ownedItems.Add (collections.GetWeapon (weaponKeys [rightWeaponIndex]).name);
-				NetworkEngine.myDataModel.coins -= cost;
-				NetworkEngine.storedPurchasable = collections.GetWeapon (weaponKeys [rightWeaponIndex]).name;
-				NetworkEngine.storedCost = cost;
-				JSONObject myJson = new JSONObject (JsonUtility.ToJson (NetworkEngine.myDataModel).ToString ());
-				purchaseIndex = rightWeaponIndex;
-				purchaseKey = key;
-				NetworkEngine.PostPurchase (myJson);
-			}
+	
 			break;
 		case "shield":
-			hasfunds = CheckFunds (collections.GetShield (shieldKeys [leftShieldIndex]).name, shieldPrices);
-			cost = CheckPricing (collections.GetShield (shieldKeys [leftShieldIndex]).name, shieldPrices);
-			if (hasfunds) {
-				NetworkEngine.isPurchasing = true;
-				NetworkEngine.myDataModel.ownedItems.Add (collections.GetShield (weaponKeys [leftShieldIndex]).name);
-				NetworkEngine.myDataModel.coins -= cost;
-				NetworkEngine.storedPurchasable = collections.GetShield (shieldKeys [leftShieldIndex]).name;
-				NetworkEngine.storedCost = cost;
-				JSONObject myJson = new JSONObject (JsonUtility.ToJson (NetworkEngine.myDataModel).ToString ());
-				purchaseIndex = leftShieldIndex;
-				purchaseKey = key;
-				NetworkEngine.PostPurchase (myJson);
-			}
+
 			break;
 		
 
 		}
-		if (!hasfunds) {
-			print ("you do not have enough funds");
-			purchaseIndex = 0;
-			purchaseKey = "";
-		}
+
 	}
 
 	public bool CheckFunds(string mykey,Dictionary<string, int> myDic)
@@ -841,7 +777,7 @@ public class PartSelectionController : MonoBehaviour
 		foreach(KeyValuePair<string,int> keyValue in myDic)
 		{
 			if (mykey == keyValue.Key)
-			if (NetworkEngine.myDataModel.coins >= keyValue.Value) {
+			if (OwnedManager.myDataModel.coins >= keyValue.Value) {
 				return hasfunds = true;
 			} else {
 				return hasfunds = false;

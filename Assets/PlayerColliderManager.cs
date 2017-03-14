@@ -82,7 +82,7 @@ public class PlayerColliderManager : MonoBehaviour {
 			} else {
 				mult=1;
 			}
-			NetworkEngine.EarnedCoin (mult);
+			ScoringManager.UpdateCoins (mult);
 
 			ScoringManager.UpdateScore (25, mult);
 			print (col.name);

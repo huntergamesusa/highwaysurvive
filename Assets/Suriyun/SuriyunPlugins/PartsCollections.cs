@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using System.IO;
 
 public class PartsCollections : MonoBehaviour
 {
+	public static DataModel myDataModel = new DataModel();
+
     public string headKey;
     public string hairKey;
     public string headAccesoriesKey;
@@ -42,6 +45,8 @@ public class PartsCollections : MonoBehaviour
 	public Dictionary<string, bool> weaponObjectsPurchased = new Dictionary<string, bool>();
 	public Dictionary<string, bool> shieldObjectsPurchased = new Dictionary<string, bool>();
 
+	List<string> allAvailable = new List<string>();
+
 
 	void Update(){
 		if (Input.GetKeyUp (KeyCode.H)) {
@@ -78,20 +83,7 @@ public class PartsCollections : MonoBehaviour
         List<GameObject> allResources = new List<GameObject>();
         allResources.AddRange(allParts);
         allResources.AddRange(Resources.LoadAll<GameObject>(""));
-		JSONObject getNames = new JSONObject ();
-		JSONObject headnames = new JSONObject (JSONObject.Type.OBJECT);
-		JSONObject hairnames = new JSONObject (JSONObject.Type.OBJECT);
-		JSONObject headaccnames = new JSONObject (JSONObject.Type.OBJECT);
-		JSONObject outfitnames = new JSONObject (JSONObject.Type.OBJECT);
-		JSONObject weaponnames = new JSONObject (JSONObject.Type.OBJECT);
-		JSONObject shieldnames = new JSONObject (JSONObject.Type.OBJECT);
 
-		getNames.AddField ("head", headnames);
-		getNames.AddField ("hair", hairnames);
-		getNames.AddField ("headacc", headaccnames);
-		getNames.AddField ("outfit", outfitnames);
-		getNames.AddField ("weapons", weaponnames);
-		getNames.AddField ("shield", shieldnames);
 
         foreach (GameObject obj in allResources)
         {
@@ -103,14 +95,14 @@ public class PartsCollections : MonoBehaviour
                 key = headKey;
                 AddToPart(key, obj, headObjects);
 				headObjectsPurchased.Add (obj.name, false);
-				headnames.Add (obj.name);
-            }
+				allAvailable.Add (obj.name);
+			}
             if (obj.name.StartsWith(hairKey))
             {
                 key = hairKey;
                 AddToPart(key, obj, hairObjects);
 				hairObjectsPurchased.Add (obj.name, false);
-				hairnames.Add (obj.name);
+				allAvailable.Add (obj.name);
 
 
             }
@@ -119,7 +111,7 @@ public class PartsCollections : MonoBehaviour
                 key = headAccesoriesKey;
                 AddToPart(key, obj, headAccesoriesObjects);
 				headAccessObjectsPurchased.Add (obj.name, false);
-				headaccnames.Add (obj.name);
+				allAvailable.Add (obj.name);
 
 
             }
@@ -128,21 +120,19 @@ public class PartsCollections : MonoBehaviour
                 key = shoulderKey;
                 AddToPart(key, obj, shoulderObjects);
 				outfitObjectsPurchased.Add (obj.name, false);
-				outfitnames.Add (obj.name);
             }
             if (obj.name.StartsWith(elbowKey))
             {
                 key = elbowKey;
                 AddToPart(key, obj, elbowObjects);
 				outfitObjectsPurchased.Add (obj.name, false);
-				outfitnames.Add (obj.name);
             }
             if (obj.name.StartsWith(weaponKey))
             {
                 key = weaponKey;
                 AddToPart(key, obj, weaponObjects);
 				weaponObjectsPurchased.Add (obj.name, false);
-				weaponnames.Add (obj.name);
+				allAvailable.Add (obj.name);
 
 
             }
@@ -151,7 +141,7 @@ public class PartsCollections : MonoBehaviour
                 key = shieldKey;
                 AddToPart(key, obj, shieldObjects);
 				shieldObjectsPurchased.Add (obj.name, false);
-				shieldnames.Add (obj.name);
+				allAvailable.Add (obj.name);
 
 
             }
@@ -160,7 +150,7 @@ public class PartsCollections : MonoBehaviour
                 key = chestKey;
                 AddToPart(key, obj, chestObjects);
 				outfitObjectsPurchased.Add (obj.name, false);
-				outfitnames.Add (obj.name);
+				allAvailable.Add (obj.name);
 
 
             }
@@ -169,36 +159,90 @@ public class PartsCollections : MonoBehaviour
                 key = spineKey;
                 AddToPart(key, obj, spineObjects);
 				outfitObjectsPurchased.Add (obj.name, false);
-				outfitnames.Add (obj.name);
             }
             if (obj.name.StartsWith(lowerSpineKey))
             {
                 key = lowerSpineKey;
                 AddToPart(key, obj, lowerSpineObjects);
 				outfitObjectsPurchased.Add (obj.name, false);
-				outfitnames.Add (obj.name);
             }
             if (obj.name.StartsWith(hipKey))
             {
                 key = hipKey;
                 AddToPart(key, obj, hipObjects);
 				outfitObjectsPurchased.Add (obj.name, false);
-				outfitnames.Add (obj.name);
             }
             if (obj.name.StartsWith(kneeKey))
             {
                 key = kneeKey;
                 AddToPart(key, obj, kneeObjects);
 				outfitObjectsPurchased.Add (obj.name, false);
-				outfitnames.Add (obj.name);
             }
         }
         CreateArmParts();
         CreateLegParts();
-		print (getNames.Print (true));
+//		OwnedManager.ReceiveAvailableItems (allAvailable);
+
+		myDataModel.headObject = headObjectsPurchased;
+		myDataModel.headAccessObject = headAccessObjectsPurchased;
+		myDataModel.hairObject = hairObjectsPurchased;
+		myDataModel.outfitObject = outfitObjectsPurchased;
+		myDataModel.shieldObject = shieldObjectsPurchased;
+		myDataModel.weaponObject = weaponObjectsPurchased;
+		SetInitialOwned ();
         if (selection != null)
             selection.Init(this);
     }
+
+	 void SetInitialOwned(){
+		if (!PlayerPrefs.HasKey ("FirstBoot")) {
+			PlayerPrefs.SetInt ("FirstBoot", 1);
+			myDataModel.headObject ["Head001"] = true;
+			myDataModel.headObject ["Head001b"] = true;
+			myDataModel.outfitObject ["Chest001"] = true;
+			myDataModel.weaponObject ["Weapon001"] = true;
+			myDataModel.headenabled = "Head001";
+			myDataModel.hairenabled = "";
+			myDataModel.headaccessenabled = "";
+			myDataModel.outfiteneabled = "Chest001";
+			myDataModel.weaponenabled = "Weapon001";
+			myDataModel.shieldenabled = "";
+
+			PlayerPrefs.SetString ("Head", myDataModel.headenabled);
+			PlayerPrefs.SetString ("Hair", myDataModel.hairenabled);
+			PlayerPrefs.SetString ("HairAccess", myDataModel.headaccessenabled);
+			PlayerPrefs.SetString ("Outfit", myDataModel.outfiteneabled);
+			PlayerPrefs.SetString ("Weapon", myDataModel.weaponenabled);
+			PlayerPrefs.SetString ("Shield", myDataModel.shieldenabled);
+
+			SetPrefs (myDataModel.headObject);
+			SetPrefs (myDataModel.hairObject);
+			SetPrefs (myDataModel.headAccessObject);
+			SetPrefs (myDataModel.outfitObject);
+			SetPrefs (myDataModel.weaponObject);
+			SetPrefs (myDataModel.shieldObject);
+	
+
+		}
+
+	}
+
+	void SetPrefs(Dictionary<string, bool>  myDict){
+		foreach (KeyValuePair<string,bool> obj in myDict) {
+
+			if (myDataModel.headObject [obj.Key] == true) {
+				PlayerPrefs.SetInt (obj.Key, 1);
+			} else {
+				PlayerPrefs.SetInt (obj.Key, 0);
+
+			}
+
+
+			//			}
+		}
+	}
+
+
 
     void CreateArmParts()
     {

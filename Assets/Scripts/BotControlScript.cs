@@ -52,6 +52,7 @@ public class BotControlScript : MonoBehaviour
 	GameObject bombsUI;
 	public AudioSource footstep;
 	ScoringManager theScoringManager;
+	public bool isKeyboard;
 	public void ReceiveJoystick(Transform joy, Transform basecont){
 		baseController = basecont;
 		joystickController=joy;
@@ -89,13 +90,29 @@ public class BotControlScript : MonoBehaviour
 	void Update(){
 		if (baseController == null)
 			return;
+		if (isKeyboard) {
+			float	heading = Mathf.Atan2(Input.GetAxis ("Horizontal"),Input.GetAxis ("Vertical"));
+			if (Mathf.Abs(Input.GetAxis ("Horizontal")) > .01f ||Mathf.Abs(Input.GetAxis ("Vertical")) > .01f) {
+				transform.rotation = Quaternion.Euler (0f, heading * Mathf.Rad2Deg, 0f);
+				dist = Mathf.Lerp(dist,1,Time.deltaTime*20);
+			}
+			else{
+				dist = Mathf.Lerp(dist,0,Time.deltaTime*20);
+
+			}
+			if (Input.GetButtonUp ("Submit")) {
+				Attack (PlayerColliderManager.powerup);
+			}
+		}
+		else{
 		dir = (baseController.position - joystickController.position).normalized;
-		dist = Vector3.Distance (baseController.position, joystickController.position)/26.625f;
+		dist = Vector3.Distance (baseController.position, joystickController.position) / 26.625f;
 //		print (dist);
-		float zRotation_i = Mathf.Rad2Deg * Mathf.Atan2(dir.y, dir.x);
+		float zRotation_i = Mathf.Rad2Deg * Mathf.Atan2 (dir.y, dir.x);
 		if (dist > .01f) {
 			transform.eulerAngles = new Vector3 (transform.eulerAngles.x, -1 * zRotation_i - 90, transform.eulerAngles.z);
 		}
+	}
 
 	}
 
@@ -298,6 +315,7 @@ IEnumerator MagnetStart(){
 
 	void FixedUpdate ()
 	{
+
 
 		float v = dist;
 		anim.SetFloat("Speed", v);							// set our animator's float parameter 'Speed' equal to the vertical input axis				

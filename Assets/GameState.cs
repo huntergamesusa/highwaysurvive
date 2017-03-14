@@ -89,6 +89,7 @@ public class GameState : MonoBehaviour {
 		Debug.Log (currentPlayer.name);
 		FollowZ.target = currentPlayer.transform.GetChild (0).gameObject;
 
+
 		currentPlayer.GetComponent<BotControlScript> ().ReceiveJoystick (joystick.transform.GetChild (1), joystick.transform.GetChild (0));
 
 		currentPlayer.GetComponent<BotControlScript> ().enabled = true;

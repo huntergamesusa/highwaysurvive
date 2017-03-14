@@ -69,6 +69,7 @@ public class NetworkEngine : MonoBehaviour {
 	void PostResult(string result){
 		print (result);
 		myDataModel =  JsonUtility.FromJson<DataModel>(result);
+//		myDataModel.ownedItems.Add ("Weapon001");
 		if (myDataModel!=null) {
 			UpdateSpendable ();
 			print ("coins are: " + myDataModel.coins);
