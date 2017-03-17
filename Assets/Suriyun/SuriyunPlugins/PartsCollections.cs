@@ -45,44 +45,47 @@ public class PartsCollections : MonoBehaviour
 	public Dictionary<string, bool> weaponObjectsPurchased = new Dictionary<string, bool>();
 	public Dictionary<string, bool> shieldObjectsPurchased = new Dictionary<string, bool>();
 
-	List<string> allAvailable = new List<string>();
+//	List<string> allAvailable = new List<string>();
+	public static List<GameObject> allAvailableGO = new List<GameObject>();
 
+	public static List<GameObject> allResources = new List<GameObject>();
 
-	void Update(){
-		if (Input.GetKeyUp (KeyCode.H)) {
-			PostJsonParts (headKey);
-		}
-		if (Input.GetKeyUp (KeyCode.O)) {
-			PostJsonParts (chestKey);
-		}
-	}
-
-	public void PostJsonParts(string keyinput){
-		List<GameObject> allResources = new List<GameObject>();
-		allResources.AddRange(allParts);
-		allResources.AddRange(Resources.LoadAll<GameObject>(""));
-		foreach (GameObject obj in allResources)
-		{
-			if (obj == null)
-				continue;
-			string key = string.Empty;
-			if (obj.name.StartsWith(keyinput))
-			{
-				NetworkEngine.myDataModel.ownedItems.Add (obj.name);
-					
-			}
-		}
-
-		print (JsonUtility.ToJson(NetworkEngine.myDataModel));
-		JSONObject myJson = new JSONObject (JsonUtility.ToJson (NetworkEngine.myDataModel).ToString ());
-		GameObject.Find ("NetworkManager").SendMessage("PostCharacterData",myJson);
-	}
+//	void Update(){
+//		if (Input.GetKeyUp (KeyCode.H)) {
+//			PostJsonParts (headKey);
+//		}
+//		if (Input.GetKeyUp (KeyCode.O)) {
+//			PostJsonParts (chestKey);
+//		}
+//	}
+//
+//	public void PostJsonParts(string keyinput){
+//		List<GameObject> allResources = new List<GameObject>();
+//		allResources.AddRange(allParts);
+//		allResources.AddRange(Resources.LoadAll<GameObject>(""));
+//		foreach (GameObject obj in allResources)
+//		{
+//			if (obj == null)
+//				continue;
+//			string key = string.Empty;
+//			if (obj.name.StartsWith(keyinput))
+//			{
+//				NetworkEngine.myDataModel.ownedItems.Add (obj.name);
+//					
+//			}
+//		}
+//
+//		print (JsonUtility.ToJson(NetworkEngine.myDataModel));
+//		JSONObject myJson = new JSONObject (JsonUtility.ToJson (NetworkEngine.myDataModel).ToString ());
+//		GameObject.Find ("NetworkManager").SendMessage("PostCharacterData",myJson);
+//	}
 
     void Awake()
     {
-        List<GameObject> allResources = new List<GameObject>();
+//        List<GameObject> allResources = new List<GameObject>();
         allResources.AddRange(allParts);
         allResources.AddRange(Resources.LoadAll<GameObject>(""));
+
 
 
         foreach (GameObject obj in allResources)
@@ -95,14 +98,14 @@ public class PartsCollections : MonoBehaviour
                 key = headKey;
                 AddToPart(key, obj, headObjects);
 				headObjectsPurchased.Add (obj.name, false);
-				allAvailable.Add (obj.name);
+				allAvailableGO.Add (obj);
 			}
             if (obj.name.StartsWith(hairKey))
             {
                 key = hairKey;
                 AddToPart(key, obj, hairObjects);
 				hairObjectsPurchased.Add (obj.name, false);
-				allAvailable.Add (obj.name);
+				allAvailableGO.Add (obj);
 
 
             }
@@ -111,7 +114,7 @@ public class PartsCollections : MonoBehaviour
                 key = headAccesoriesKey;
                 AddToPart(key, obj, headAccesoriesObjects);
 				headAccessObjectsPurchased.Add (obj.name, false);
-				allAvailable.Add (obj.name);
+				allAvailableGO.Add (obj);
 
 
             }
@@ -119,20 +122,18 @@ public class PartsCollections : MonoBehaviour
             {
                 key = shoulderKey;
                 AddToPart(key, obj, shoulderObjects);
-				outfitObjectsPurchased.Add (obj.name, false);
             }
             if (obj.name.StartsWith(elbowKey))
             {
                 key = elbowKey;
                 AddToPart(key, obj, elbowObjects);
-				outfitObjectsPurchased.Add (obj.name, false);
             }
             if (obj.name.StartsWith(weaponKey))
             {
                 key = weaponKey;
                 AddToPart(key, obj, weaponObjects);
 				weaponObjectsPurchased.Add (obj.name, false);
-				allAvailable.Add (obj.name);
+				allAvailableGO.Add (obj);
 
 
             }
@@ -141,7 +142,7 @@ public class PartsCollections : MonoBehaviour
                 key = shieldKey;
                 AddToPart(key, obj, shieldObjects);
 				shieldObjectsPurchased.Add (obj.name, false);
-				allAvailable.Add (obj.name);
+				allAvailableGO.Add (obj);
 
 
             }
@@ -150,7 +151,7 @@ public class PartsCollections : MonoBehaviour
                 key = chestKey;
                 AddToPart(key, obj, chestObjects);
 				outfitObjectsPurchased.Add (obj.name, false);
-				allAvailable.Add (obj.name);
+				allAvailableGO.Add (obj);
 
 
             }
@@ -158,25 +159,21 @@ public class PartsCollections : MonoBehaviour
             {
                 key = spineKey;
                 AddToPart(key, obj, spineObjects);
-				outfitObjectsPurchased.Add (obj.name, false);
             }
             if (obj.name.StartsWith(lowerSpineKey))
             {
                 key = lowerSpineKey;
                 AddToPart(key, obj, lowerSpineObjects);
-				outfitObjectsPurchased.Add (obj.name, false);
             }
             if (obj.name.StartsWith(hipKey))
             {
                 key = hipKey;
                 AddToPart(key, obj, hipObjects);
-				outfitObjectsPurchased.Add (obj.name, false);
             }
             if (obj.name.StartsWith(kneeKey))
             {
                 key = kneeKey;
                 AddToPart(key, obj, kneeObjects);
-				outfitObjectsPurchased.Add (obj.name, false);
             }
         }
         CreateArmParts();
@@ -230,7 +227,7 @@ public class PartsCollections : MonoBehaviour
 	void SetPrefs(Dictionary<string, bool>  myDict){
 		foreach (KeyValuePair<string,bool> obj in myDict) {
 
-			if (myDataModel.headObject [obj.Key] == true) {
+			if (myDict [obj.Key] == true) {
 				PlayerPrefs.SetInt (obj.Key, 1);
 			} else {
 				PlayerPrefs.SetInt (obj.Key, 0);

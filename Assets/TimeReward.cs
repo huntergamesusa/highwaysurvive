@@ -14,45 +14,18 @@ using UnityEngine.iOS;
 public class TimeReward : MonoBehaviour {
 	public DateTime unbiasedTimerEndTimestamp;
 	public Text timeLeft;
-
-	public GameObject earnVidButton;
-	public GameObject winPrizeButton;
-	public GameObject winGiftButton;
-
-	public Text earnVidTxt;
-	public Text winPrizeTxt;
-	public Text winGiftTxt;
-
-	public Image earnPanel;
-
-	public GameObject FreeItemCam;
-	public GameObject FreeItemCamUI;
-	public GameObject FreeItem_UI;
-	public GameObject characterName;
-	public GameObject pointsGift;
-
-
-	public GameObject playBttn;
-	public GameObject closeBttn;
-	public AudioClip punchSound;
-
+	public ParticleSystem myCoinExplode;
 	public GameObject freeGiftStart;
 
 	private int lastNotificationId = 0;
 	private int randomGiftAct;
 
-	public GameObject inMenuShareBttn;
-	public GameObject inMenuGiveAwayBttn;
-	public Text actualPoints;
-	public int inGamePoints;
 
-	private int noScoremult;
-	private int someScoremult;
 
-	public GameObject isItNewGameObject;
 
 	// Use this for initialization
 	void Awake () {
+
 		// Read PlayerPrefs to restore scheduled timers
 		// By default initiliaze both timers in 60 seconds from now
 //		IOSNativeUtility.SetApplicationBagesNumber(0);
@@ -65,11 +38,13 @@ public class TimeReward : MonoBehaviour {
 //			
 //			IOSMessage.Create("Launch Notification", "Messgae: " + notification.Message + "\nNotification Data: " + notification.Data);
 //		}
-
+		if (!PlayerPrefs.HasKey ("Gifts")) {
+			PlayerPrefs.SetInt ("Gifts", 0);
+		}
 
 		checkGiftReady ();
 
-		if (PlayerPrefs.GetInt ("GiftReady") > 0 && PlayerPrefs.GetInt ("Gifts") >0) {
+		if (PlayerPrefs.GetInt ("GiftReady") > 0 && PlayerPrefs.GetInt ("Gifts") >=0) {
 			freeGiftStart.SetActive (true);
 
 		} 
@@ -77,7 +52,6 @@ public class TimeReward : MonoBehaviour {
 			freeGiftStart.SetActive (false);
 
 		}
-		inGamePoints = int.Parse (actualPoints.text);
 
 	}
 
@@ -95,10 +69,10 @@ public class TimeReward : MonoBehaviour {
 
 			checkGiftReady();
 
-			gameEndChangeButtons();
+//			gameEndChangeButtons();
 			checkTimeLeft();
 
-			if (PlayerPrefs.GetInt ("GiftReady") > 0 && PlayerPrefs.GetInt ("Gifts") >0) {
+			if (PlayerPrefs.GetInt ("GiftReady") > 0 && PlayerPrefs.GetInt ("Gifts") >=0) {
 				freeGiftStart.SetActive (true);
 				
 			} 
@@ -116,103 +90,6 @@ public class TimeReward : MonoBehaviour {
 
 
 
-
-	public void gameEndChangeButtons(){
-
-		if (PlayerPrefs.GetInt ("selectedLevel") < 2) {
-			inGamePoints = int.Parse (actualPoints.text);
-			if (inGamePoints > 0) {
-				someScoremult++;
-			} else {
-				noScoremult++;
-			}
-		}
-
-			if (PlayerPrefs.GetInt ("GiftReady") > 0) {
-			earnPanel.enabled =true;
-			earnVidTxt.enabled = false;
-			earnVidButton.GetComponent<Image> ().enabled = false;
-			earnVidButton.GetComponent<Button> ().enabled = false;
-			winGiftTxt.enabled = true;
-			winGiftButton.GetComponent<Image> ().enabled = true;
-			winGiftButton.GetComponent<Button> ().enabled = true;
-			winPrizeTxt.enabled = false;
-			winPrizeButton.GetComponent<Image> ().enabled = false;
-			winPrizeButton.GetComponent<Button> ().enabled = false;
-		} 
-		else {
-
-			float randomEarnorWin = UnityEngine.Random.Range(0,100);
-
-			if (randomEarnorWin > 50) {
-				if(someScoremult>=1 ||noScoremult>=2){
-					earnPanel.enabled =true;
-
-					earnVidTxt.enabled = true;
-					earnVidButton.GetComponent<Image> ().enabled = true;
-					earnVidButton.GetComponent<Button> ().enabled = true;
-					winGiftTxt.enabled = false;
-					winGiftButton.GetComponent<Image> ().enabled = false;
-					winGiftButton.GetComponent<Button> ().enabled = false;
-					winPrizeTxt.enabled = false;
-					winPrizeButton.GetComponent<Image> ().enabled = false;
-					winPrizeButton.GetComponent<Button> ().enabled = false;
-
-					someScoremult =0;
-					noScoremult =0;
-				}
-				else{
-	
-				}
-			} 
-			//IF YOU HAVE NOTHING AVAILABLE
-			else {
-				if(someScoremult>=1 ||noScoremult>=2){
-					if(PlayerPrefs.GetInt("myCredits")>=100){
-						earnPanel.enabled =true;
-						
-						earnVidTxt.enabled = false;
-						earnVidButton.GetComponent<Image> ().enabled = false;
-						earnVidButton.GetComponent<Button> ().enabled = false;
-						winGiftTxt.enabled = false;
-						winGiftButton.GetComponent<Image> ().enabled = false;
-						winGiftButton.GetComponent<Button> ().enabled = false;
-						winPrizeTxt.enabled = true;
-						winPrizeButton.GetComponent<Image> ().enabled = true;
-						winPrizeButton.GetComponent<Button> ().enabled = true;
-					
-					}
-				
-				else{
-
-					earnPanel.enabled =false;
-
-					earnVidTxt.enabled = false;
-					earnVidButton.GetComponent<Image> ().enabled = false;
-					earnVidButton.GetComponent<Button> ().enabled = false;
-					winGiftTxt.enabled = false;
-					winGiftButton.GetComponent<Image> ().enabled = false;
-					winGiftButton.GetComponent<Button> ().enabled = false;
-					winPrizeTxt.enabled = false;
-					winPrizeButton.GetComponent<Image> ().enabled = false;
-					winPrizeButton.GetComponent<Button> ().enabled = false;
-				
-				}
-				}
-			}
-
-		
-
-		}
-
-	if (PlayerPrefs.GetInt ("myCredits") < 100) {
-			winPrizeTxt.enabled = false;
-			winPrizeButton.GetComponent<Image> ().enabled = false;
-			winPrizeButton.GetComponent<Button> ().enabled = false;
-		}
-
-
-	}
 
 
 
@@ -243,21 +120,21 @@ public class TimeReward : MonoBehaviour {
 
 	void checkTimeLeft(){
 		TimeSpan unbiasedRemaining = unbiasedTimerEndTimestamp - UnbiasedTime.Instance.Now();
-		Text timeRemainingTXT = GameObject.Find("TimeRemainingGift").GetComponent<Text>();
+
 		if (unbiasedRemaining.Hours > 0) {
 
 			String timeFormatted = string.Format("{0}:{1:D2}", unbiasedRemaining.Hours, (unbiasedRemaining.Minutes));
 
 
-			timeRemainingTXT.text = SmartLocalization_Nate.giftInTrans+" " + timeFormatted;
+			timeLeft.text = SmartLocalization_Nate.giftInTrans+" " + timeFormatted;
 		} 
 		else {
 			if(unbiasedRemaining.TotalHours>0){
-				timeRemainingTXT.text = SmartLocalization_Nate.giftInTrans+" "  + (unbiasedRemaining.Minutes+1) + "M";
+				timeLeft.text = SmartLocalization_Nate.giftInTrans+" "  + (unbiasedRemaining.Minutes+1) + "M";
 			}
 		}
 		if (PlayerPrefs.GetInt ("GiftReady") > 0) {
-			timeRemainingTXT.text = "";
+			timeLeft.text = "";
 		}
 
 	}
@@ -268,6 +145,7 @@ public class TimeReward : MonoBehaviour {
 
 
 		if(PlayerPrefs.GetInt("Gifts")==0){
+			
 			//0 min
 			PlayerPrefs.SetInt("GiftReady",1);
 		}
@@ -348,14 +226,11 @@ public class TimeReward : MonoBehaviour {
 
 	}
 
-	public IEnumerator giftExpensedResetTime(){
+	public void giftExpensedResetTime(){
 
 
 		TimeSpan unbiasedRemaining = unbiasedTimerEndTimestamp - UnbiasedTime.Instance.Now();
 
-
-
-		FreeItemCam.SendMessage ("animateGUI");
 
 //		if(PlayerPrefs.GetInt ("Gifts")>=1) {
 //			IOSNotificationController.Instance.CancelAllLocalNotifications();
@@ -477,77 +352,32 @@ public class TimeReward : MonoBehaviour {
 
 
 
-		FreeItemCam.GetComponent<Camera>().enabled=true;
-		FreeItemCamUI.SetActive(true);
-		FreeItem_UI.SetActive(true);
-		characterName.SetActive (false);
-		pointsGift.SetActive (true);
-		pointsGift.transform.localScale = Vector3.zero;
-
-		playBttn.transform.parent.GetComponent<Button>().enabled =false;
-		playBttn.transform.parent.GetComponent<Image>().enabled =false;
-		closeBttn.transform.parent.GetComponent<Button>().enabled =false;
-		closeBttn.transform.parent.GetComponent<Image>().enabled =false;
-
-		
-		
-		playBttn.GetComponent<Button>().enabled =true;
-		playBttn.GetComponent<Image>().enabled =true;
-		closeBttn.GetComponent<Button>().enabled =true;
-		closeBttn.GetComponent<Image>().enabled =true;
-		inMenuShareBttn.SetActive(false);
-		inMenuGiveAwayBttn.SetActive(false);
-
 		//needed incause game is paused
 		freeGiftStart.SetActive (false);
-		isItNewGameObject.SetActive (false);
 
-//		yield return new WaitForSeconds (1);
+		myCoinExplode.Play ();
 
-		Text pointEffectGift = GameObject.Find("PointsGiftTXT").GetComponent<Text>();
-
-		GameObject UISound = GameObject.Find ("UIButtonSounds");
-		UISound.GetComponent<AudioSource> ().PlayOneShot (punchSound);
+//		GameObject UISound = GameObject.Find ("UIButtonSounds");
+//		UISound.GetComponent<AudioSource> ().PlayOneShot (punchSound);
 
 		 int randomGift = UnityEngine.Random.Range(0, 100);
 
 
 		if(randomGift >97){
 			randomGiftAct = UnityEngine.Random.Range (110,200);
-			PlayerPrefs.SetInt("myCredits",PlayerPrefs.GetInt("myCredits") + randomGiftAct);
 		}
 		if(randomGift >86 &&randomGift <=97){
 			randomGiftAct = UnityEngine.Random.Range (60,110);
-			PlayerPrefs.SetInt("myCredits",PlayerPrefs.GetInt("myCredits") + randomGiftAct);
 
 			}
 		if(randomGift<=86){
 			randomGiftAct = UnityEngine.Random.Range (40,60);
-			PlayerPrefs.SetInt("myCredits",PlayerPrefs.GetInt("myCredits") + randomGiftAct);
 			}
-
-
-		Text credits = GameObject.Find("Credits UI").GetComponent<Text>();
-
-		credits.text  = PlayerPrefs.GetInt("myCredits").ToString("f0");
-		pointEffectGift.GetComponent<Text> ().text = randomGiftAct.ToString ("f0");
-
-		LeanTween.scale(pointEffectGift.gameObject, new Vector3(1f,1f,1f), .7f).setEase(LeanTweenType.easeOutElastic);
-//		LeanTween.scale(pointEffectGift.gameObject, new Vector3(0f,0f,0f), .2f).setEase(LeanTweenType.easeOutExpo).setDelay(.7f);
+		ScoringManager.UpdateCoins (randomGiftAct);
 
 		//make sure time is displayed after receiving wared
 		checkTimeLeft ();
 
-		GameObject firework = GameObject.Find ("CoinRewardGift");
-
-		yield return new WaitForSeconds(.25f);
-		firework.GetComponent<ParticleSystem> ().Play ();
-
-		for (int i = 0; i < 20; i++) {
-			firework.GetComponent<AudioSource>().Play();
-			yield return new WaitForSeconds(.075f);
-
-		}
 
 	}
 

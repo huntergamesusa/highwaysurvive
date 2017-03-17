@@ -22,7 +22,7 @@ public class SmartLocalization_Nate : MonoBehaviour {
 	public static string bestTimePongTrans;
 	public static string justUnlockedTrans;
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 		LanguageManager languageManager = LanguageManager.Instance;
 //		if (gameObject.name == "SmartLocalization_Nate") {
 			languageManager.OnChangeLanguage += OnChangeLanguage;
@@ -31,18 +31,16 @@ public class SmartLocalization_Nate : MonoBehaviour {
 			PlayerPrefs.SetString ("CurrentLanguage", "en");
 		} else {
 			
-			languageManager.ChangeLanguage (PlayerPrefs.GetString ("CurrentLanguage"));
 		}
+		languageManager.ChangeLanguage (PlayerPrefs.GetString ("CurrentLanguage"));
+
 
 
 	}
 
 
 	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
 
 	public void ChangetheLanguage(string language ){
 		LanguageManager languageManager = LanguageManager.Instance;
@@ -65,26 +63,19 @@ public class SmartLocalization_Nate : MonoBehaviour {
 			gameObject.GetComponent<Text>().text = localizedString;
 
 		}
-		RateBuddy = thisLanguageManager.GetTextValue("BT.buddy")+" " +thisLanguageManager.GetTextValue("BT.toss");
-		RateToss = thisLanguageManager.GetTextValue("BT.toss");
-		rateBody=thisLanguageManager.GetTextValue("BT.ratingbody");
-		rateNever=thisLanguageManager.GetTextValue("BT.ratenever");
-		rateLater=thisLanguageManager.GetTextValue("BT.ratelater");
-		rateNow=thisLanguageManager.GetTextValue("BT.ratenow");
-		cupsLeft=thisLanguageManager.GetTextValue("BT.cupsleft");
+//		RateBuddy = thisLanguageManager.GetTextValue("BT.buddy")+" " +thisLanguageManager.GetTextValue("BT.toss");
+//		RateToss = thisLanguageManager.GetTextValue("BT.toss");
+//		rateBody=thisLanguageManager.GetTextValue("BT.ratingbody");
+//		rateNever=thisLanguageManager.GetTextValue("BT.ratenever");
+//		rateLater=thisLanguageManager.GetTextValue("BT.ratelater");
+//		rateNow=thisLanguageManager.GetTextValue("BT.ratenow");
 
-		bullsEyeTrans=thisLanguageManager.GetTextValue("BT.bullseye");
-		giftInTrans=thisLanguageManager.GetTextValue("BT.giftin");
-		claimGiftTrans = thisLanguageManager.GetTextValue("BT.claimgift");
+//		giftInTrans=thisLanguageManager.GetTextValue("BT.giftin");
+//		claimGiftTrans = thisLanguageManager.GetTextValue("BT.claimgift");
+		giftInTrans = thisLanguageManager.GetTextValue("BT.giftin");
 
-		niceTossTrans=thisLanguageManager.GetTextValue("BT.nicetoss");
-		
-		bestScoreWindTrans=thisLanguageManager.GetTextValue("BT.bestscorewind");
-		bestScoreTNTTrans=thisLanguageManager.GetTextValue("BT.bestscoretnt");
-		bestTimePongTrans=thisLanguageManager.GetTextValue("BT.besttimepong");
-		justUnlockedTrans=thisLanguageManager.GetTextValue("BT.justunlocked");
-		GameObject pointsColl = GameObject.Find ("PointsCollect");
-		pointsColl.SendMessage("translateCupsLeft",cupsLeft);
+//		justUnlockedTrans=thisLanguageManager.GetTextValue("BT.justunlocked");
+
 
 
 	}

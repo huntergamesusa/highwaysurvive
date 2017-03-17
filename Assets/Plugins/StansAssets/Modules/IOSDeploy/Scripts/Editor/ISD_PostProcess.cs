@@ -105,29 +105,29 @@ namespace SA.IOSDeploy {
 
 			#if UNITY_5
 
-			if(BuildTarget.iOS == target){
-				UnityEditor.iOS.Xcode.PBXProject proj = new UnityEditor.iOS.Xcode.PBXProject();
-				string projPath = Path.Combine(pathToBuiltProject, "Unity-iPhone.xcodeproj/project.pbxproj");
-				proj.ReadFromString(File.ReadAllText(projPath));
-				string targetGUID = proj.TargetGuidByName("Unity-iPhone");
-				if(ISD_Settings.Instance.enableBitCode){
-					proj.SetBuildProperty(targetGUID, "ENABLE_BITCODE", "YES");
-				}else{
-					proj.SetBuildProperty(targetGUID, "ENABLE_BITCODE", "NO");
-				}
-				if(ISD_Settings.Instance.enableTestability){
-					proj.SetBuildProperty(targetGUID, "ENABLE_TESTABILITY", "YES");
-				}else{
-					proj.SetBuildProperty(targetGUID, "ENABLE_TESTABILITY", "NO");
-				}
-				if(ISD_Settings.Instance.generateProfilingCode){
-					proj.SetBuildProperty(targetGUID, "GENERATE_PROFILING_CODE", "YES");
-				}else{
-					proj.SetBuildProperty(targetGUID, "GENERATE_PROFILING_CODE", "NO");
-				}
-
-				File.WriteAllText(projPath, proj.WriteToString());
-			}
+//			if(BuildTarget.iOS == target){
+//				UnityEditor.iOS.utXcode.PBXProject proj = new UnityEditor.iOS.Xcode.PBXProject();
+//				string projPath = Path.Combine(pathToBuiltProject, "Unity-iPhone.xcodeproj/project.pbxproj");
+//				proj.ReadFromString(File.ReadAllText(projPath));
+//				string targetGUID = proj.TargetGuidByName("Unity-iPhone");
+//				if(ISD_Settings.Instance.enableBitCode){
+//					proj.SetBuildProperty(targetGUID, "ENABLE_BITCODE", "YES");
+//				}else{
+//					proj.SetBuildProperty(targetGUID, "ENABLE_BITCODE", "NO");
+//				}
+//				if(ISD_Settings.Instance.enableTestability){
+//					proj.SetBuildProperty(targetGUID, "ENABLE_TESTABILITY", "YES");
+//				}else{
+//					proj.SetBuildProperty(targetGUID, "ENABLE_TESTABILITY", "NO");
+//				}
+//				if(ISD_Settings.Instance.generateProfilingCode){
+//					proj.SetBuildProperty(targetGUID, "GENERATE_PROFILING_CODE", "YES");
+//				}else{
+//					proj.SetBuildProperty(targetGUID, "GENERATE_PROFILING_CODE", "NO");
+//				}
+//
+//				File.WriteAllText(projPath, proj.WriteToString());
+//			}
 
 			#endif
 
