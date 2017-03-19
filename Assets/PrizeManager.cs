@@ -7,6 +7,7 @@ public class PrizeManager : MonoBehaviour {
 	public RawImage background;
 	public GameObject shadow;
 	public GameObject emptyBody;
+	GameObject currentPrize;
 	// Use this for initialization
 	void Awake () {
 		EnableUI (false);
@@ -90,7 +91,7 @@ public class PrizeManager : MonoBehaviour {
 				myGift.transform.parent = giftCam.transform;
 				myGift.transform.localPosition = new Vector3 (0, -.079772f, .933f);
 				LeanTween.rotateAround (myGift, new Vector3 (0, 1, 0), 360, 4).setLoopClamp ();
-
+				currentPrize = myGift;
 			} else {
 				float rotCorrect;
 				if(PartsCollections.allAvailableGO [ran].name.Contains("Weapon")){
@@ -109,17 +110,22 @@ public class PrizeManager : MonoBehaviour {
 				myGift2.transform.localPosition = new Vector3 (0,0,0);
 				myGift2.layer = 20;
 				LeanTween.rotateAround (GOCorrect, new Vector3 (0, 1, 0), 360, 4).setLoopClamp ();
-
+				currentPrize=GOCorrect;
 			}
 
 		}
 
 	}
 
-	void EnableUI(bool bol){
+	public void EnableUI(bool bol){
 		giftCam.enabled = bol;
 		background.enabled = bol;
 		shadow.SetActive (bol);
+		if(!bol){
+			if(currentPrize){
+				Destroy(currentPrize);
+			}
+		}
 	}
 
 	void DestroyGO(string tag){

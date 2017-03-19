@@ -85,7 +85,7 @@ public class PartsCollections : MonoBehaviour
 //        List<GameObject> allResources = new List<GameObject>();
         allResources.AddRange(allParts);
         allResources.AddRange(Resources.LoadAll<GameObject>(""));
-
+		JSONObject jval = new JSONObject ();
 
 
         foreach (GameObject obj in allResources)
@@ -99,6 +99,7 @@ public class PartsCollections : MonoBehaviour
                 AddToPart(key, obj, headObjects);
 				headObjectsPurchased.Add (obj.name, false);
 				allAvailableGO.Add (obj);
+				jval.Add (obj.name);
 			}
             if (obj.name.StartsWith(hairKey))
             {
@@ -106,6 +107,7 @@ public class PartsCollections : MonoBehaviour
                 AddToPart(key, obj, hairObjects);
 				hairObjectsPurchased.Add (obj.name, false);
 				allAvailableGO.Add (obj);
+				jval.Add (obj.name);
 
 
             }
@@ -115,6 +117,7 @@ public class PartsCollections : MonoBehaviour
                 AddToPart(key, obj, headAccesoriesObjects);
 				headAccessObjectsPurchased.Add (obj.name, false);
 				allAvailableGO.Add (obj);
+				jval.Add (obj.name);
 
 
             }
@@ -134,6 +137,7 @@ public class PartsCollections : MonoBehaviour
                 AddToPart(key, obj, weaponObjects);
 				weaponObjectsPurchased.Add (obj.name, false);
 				allAvailableGO.Add (obj);
+				jval.Add (obj.name);
 
 
             }
@@ -143,6 +147,7 @@ public class PartsCollections : MonoBehaviour
                 AddToPart(key, obj, shieldObjects);
 				shieldObjectsPurchased.Add (obj.name, false);
 				allAvailableGO.Add (obj);
+				jval.Add (obj.name);
 
 
             }
@@ -152,6 +157,7 @@ public class PartsCollections : MonoBehaviour
                 AddToPart(key, obj, chestObjects);
 				outfitObjectsPurchased.Add (obj.name, false);
 				allAvailableGO.Add (obj);
+				jval.Add (obj.name);
 
 
             }
@@ -179,7 +185,7 @@ public class PartsCollections : MonoBehaviour
         CreateArmParts();
         CreateLegParts();
 //		OwnedManager.ReceiveAvailableItems (allAvailable);
-
+		print(jval.Print(true));
 		myDataModel.headObject = headObjectsPurchased;
 		myDataModel.headAccessObject = headAccessObjectsPurchased;
 		myDataModel.hairObject = hairObjectsPurchased;
