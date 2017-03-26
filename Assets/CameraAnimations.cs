@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraAnimations : MonoBehaviour {
-	public static Vector3 offset = new Vector3(0,-5,12);
+	public static Vector3 offset = new Vector3(0,-4,12);
 	public static Vector3 menuPos;
 	public static Vector3 menuRot = new Vector3(11.33f,0,0);
 	public static GameObject gameLoc;
@@ -14,7 +14,7 @@ public class CameraAnimations : MonoBehaviour {
 
 	// Use this for initialization
 	void Awake () {
-		target = GameObject.Find ("EmptyBody");
+		target = GameObject.Find ("Root");
 		mainCam = Camera.main;
 		gameLoc = transform.GetChild (1).gameObject;
 		CamParent = new GameObject ();

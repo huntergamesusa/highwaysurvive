@@ -57,6 +57,8 @@ public class TimeReward : MonoBehaviour {
 
 	void Start(){
 		IOSNativeUtility.SetApplicationBagesNumber(0);
+
+	
 	}
 	
 	void OnApplicationPause (bool paused) {

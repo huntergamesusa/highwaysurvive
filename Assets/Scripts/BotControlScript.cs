@@ -75,9 +75,8 @@ public class BotControlScript : MonoBehaviour
 		//.2
 		Vector3 adjustSlash = new Vector3(myWeaponParent.transform.GetChild (0).GetComponent<MeshFilter> ().mesh.bounds.size.z/.19f,myWeaponParent.transform.GetChild (0).GetComponent<MeshFilter> ().mesh.bounds.size.z/.19f,myWeaponParent.transform.GetChild (0).GetComponent<MeshFilter> ().mesh.bounds.size.z/.19f);
 		slashAnim.transform.localScale = adjustSlash;
-		print(myWeaponParent.transform.GetChild (0).GetComponent<MeshFilter> ().mesh.bounds.size.z);
 		// initialising reference variables
-
+			myWeaponParent.transform.GetChild (0).GetComponent<MeshRenderer>().enabled=false;
 		myWeaponParent.transform.GetChild (0).GetComponent<MeshCollider>().enabled=false;
 		}
 		anim = GetComponent<Animator>();					  
@@ -106,12 +105,13 @@ public class BotControlScript : MonoBehaviour
 		}
 		else{
 		dir = (baseController.position - joystickController.position).normalized;
-		dist = Vector3.Distance (baseController.position, joystickController.position) / 26.625f;
+			dist = (Vector3.Distance (baseController.position, joystickController.position) / 26.625f)*1000;
 //		print (dist);
 		float zRotation_i = Mathf.Rad2Deg * Mathf.Atan2 (dir.y, dir.x);
-		if (dist > .01f) {
+		if (dist > 01f) {
 			transform.eulerAngles = new Vector3 (transform.eulerAngles.x, -1 * zRotation_i - 90, transform.eulerAngles.z);
 		}
+//			print (dist);
 	}
 
 	}

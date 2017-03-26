@@ -13,11 +13,15 @@ public class EnableRagdoll : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
 		parent = transform.parent.gameObject;
+			
 		root = transform.parent.GetChild (0).gameObject;
+
 		if (!isZombie) {
+
 			Physics.IgnoreLayerCollision (9, 12, true);
 
 		} else {
+
 			Physics.IgnoreLayerCollision (17, 12, true);
 			facepunch = Resources.Load ("Sounds/human_face_punch")as AudioClip;
 

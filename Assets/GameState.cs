@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 public class GameState : MonoBehaviour {
+	public GameObject[] movingObjects;
+	public  List <Vector3> originalPos = new List<Vector3> ();
+	public  List <Vector3> eulerStart = new List<Vector3> ();
+
+	public GameObject[] boundries;
+
 	public GameObject currentPlayer;
 	public Transform startTrans;
 	public GameObject mainPlayer;
@@ -15,22 +21,55 @@ public class GameState : MonoBehaviour {
 	public GameObject powerupParent;
 	public Text[] textObjects;
 
+	public bool dontspawncars=false;
+
 	void Awake(){
-		
+		if (movingObjects != null) {
+			for (int i = 0; i < movingObjects.Length; i++) {
+				originalPos.Add (movingObjects [i].transform.position);
+				eulerStart.Add (movingObjects [i].transform.eulerAngles);
+			}
+		}
+
+
 		Application.targetFrameRate = 60;
 	}
 
+	void ResetWorld(){
+		if (movingObjects != null) {
+			
+			for (int i = 0; i < movingObjects.Length; i++) {
+				print (originalPos [i]);
+				movingObjects [i].transform.position = originalPos [i];
+				movingObjects [i].transform.eulerAngles = eulerStart [i];
+				if (movingObjects [i].tag == "moveGround") {
+					movingObjects [i].GetComponent<BoxCollider> ().enabled = true;
+				}
+
+			}
+		}
+	}
+
 	public void Restart(){
+		ResetWorld ();
+
 		print ("restart");
 //		System.GC.Collect ();
 		OverridePutBackPowerup ();
 		FollowZ.target = null;
+		foreach (GameObject obj in boundries) {
+			obj.SetActive (false);
 
+		}
 		ScoringManager.ResetScore ();
 		GameObject spawnZom = GameObject.Find ("SpawnZombies");
 		spawnZom.GetComponent<SpawnZombies> ().enabled = false;
-		GameObject spawnCar = GameObject.Find ("SpawnCars");
-		spawnCar.GetComponent<SpawnCars> ().enabled = false;
+		if (dontspawncars) {
+		} else {
+			GameObject spawnCar = GameObject.Find ("SpawnCars");
+			spawnCar.GetComponent<SpawnCars> ().enabled = false;
+			Destroy (spawnCar);
+		}
 		GameObject spawnColl = GameObject.Find ("SpawnCollectables");
 		spawnColl.GetComponent<SpawnCollectables> ().enabled = false;
 
@@ -42,17 +81,19 @@ public class GameState : MonoBehaviour {
 		DestroyGO ("powerup");
 		DestroyGO ("tnt");
 
-		Destroy (spawnCar);
 		Destroy (spawnZom);
 		Destroy (spawnColl);
 
 		Destroy (GameObject.Find ("EmptyBody"));
-		Destroy (GameObject.Find ("Root_M"));
+		Destroy (GameObject.Find ("Armature"));
 		GameObject newPlayer = Instantiate (mainPlayer, startTrans.position, Quaternion.Euler (startTrans.eulerAngles));
 		newPlayer.name = "EmptyBody";
 		currentPlayer = newPlayer;
-		GameObject.Find ("PartSelectionController").SendMessage("RestartCharacter",currentPlayer.GetComponent<CharacterParts>());
-		CameraAnimations.target = currentPlayer.transform.GetChild (1).gameObject;
+		GameObject characterManage = GameObject.Find ("NewCharacterManager");
+		characterManage.SendMessage ("InitCharacterReceive", currentPlayer.transform.Find("MicroMale").gameObject);
+
+//		GameObject.Find ("PartSelectionController").SendMessage("RestartCharacter",currentPlayer.GetComponent<CharacterParts>());
+		CameraAnimations.target = currentPlayer.transform.GetChild(0).GetChild(0).gameObject;
 //		FollowZ.target = currentPlayer.transform.GetChild (0).gameObject;
 		joystick.SetActive (false);
 		MainMenu.SetActive (true);
@@ -60,10 +101,11 @@ public class GameState : MonoBehaviour {
 		EnableAlphaText (false, textObjects);
 
 
+
 	}
 
 	public void MakeSelection(){
-		GameObject.Find ("PartSelectionController").SendMessage("RestartCharacter",currentPlayer.GetComponent<CharacterParts>());
+		GameObject.Find ("NewCharacterManager").SendMessage("SelectCharacter");
 
 	}
 	public void ChangeMyCamera(string cam){
@@ -76,12 +118,14 @@ public class GameState : MonoBehaviour {
 //		System.GC.Collect ();
 
 		ScoringManager.ResetScore ();
-//		GameObject.Find ("SpawnZombies").GetComponent<SpawnZombies> ().enabled = true;
-//		GameObject.Find ("SpawnCars").GetComponent<SpawnCars> ().enabled = true;
+
 		GameObject spawningZ = Instantiate (spawnZ, transform.position, Quaternion.identity)as GameObject;
 		spawningZ.name = "SpawnZombies";
-		GameObject spawningC = Instantiate (spawnC, transform.position, Quaternion.identity)as GameObject;
-		spawningC.name = "SpawnCars";
+		if (dontspawncars) {
+		} else {
+			GameObject spawningC = Instantiate (spawnC, transform.position, Quaternion.identity)as GameObject;
+			spawningC.name = "SpawnCars";
+		}
 		GameObject spawningP = Instantiate (spawnP, transform.position, Quaternion.identity)as GameObject;
 		spawningP.name = "SpawnCollectables";
 		joystick.SetActive (true);
@@ -96,6 +140,10 @@ public class GameState : MonoBehaviour {
 
 		CameraAnimations.ChangeCamera ("ingame");
 		EnableAlphaText (true, textObjects);
+		foreach (GameObject obj in boundries) {
+			obj.SetActive (true);
+
+		}
 	}
 
 	public void ReplaySameGame(){
@@ -104,8 +152,13 @@ public class GameState : MonoBehaviour {
 //		System.GC.Collect ();
 		GameObject spawnZom = GameObject.Find ("SpawnZombies");
 		spawnZom.GetComponent<SpawnZombies> ().enabled = false;
-		GameObject spawnCar = GameObject.Find ("SpawnCars");
-		spawnCar.GetComponent<SpawnCars> ().enabled = false;
+		if (dontspawncars) {
+		} else {
+			GameObject spawnCar = GameObject.Find ("SpawnCars");
+			spawnCar.GetComponent<SpawnCars> ().enabled = false;
+			Destroy (spawnCar);
+
+		}
 		GameObject spawnColl = GameObject.Find ("SpawnCollectables");
 		spawnColl.GetComponent<SpawnCollectables> ().enabled = false;
 
@@ -116,12 +169,11 @@ public class GameState : MonoBehaviour {
 		DestroyGO ("powerup");
 		DestroyGO ("tnt");
 
-		Destroy (spawnCar);
 		Destroy (spawnZom);
 		Destroy (spawnColl);
 
 		Destroy (GameObject.Find ("EmptyBody"));
-		Destroy (GameObject.Find ("Root_M"));
+		Destroy (GameObject.Find ("Armature"));
 
 		GameObject spawningZ = Instantiate (spawnZ, transform.position, Quaternion.identity)as GameObject;
 		spawningZ.name = "SpawnZombies";
@@ -133,8 +185,8 @@ public class GameState : MonoBehaviour {
 		GameObject newPlayer = Instantiate (mainPlayer, startTrans.position, Quaternion.Euler (startTrans.eulerAngles));
 		newPlayer.name = "EmptyBody";
 		currentPlayer = newPlayer;
-		GameObject.Find ("PartSelectionController").SendMessage("RestartCharacter",currentPlayer.GetComponent<CharacterParts>());
-		CameraAnimations.target = currentPlayer.transform.GetChild (1).gameObject;
+		GameObject.Find ("NewCharacterManager").SendMessage ("InitCharacter");
+		CameraAnimations.target = currentPlayer.transform.GetChild(0).GetChild(0).gameObject;
 		FollowZ.target = currentPlayer.transform.GetChild (0).gameObject;
 		selectCanvas.SetActive (false);
 		CameraAnimations.ChangeCamera ("ingame");
