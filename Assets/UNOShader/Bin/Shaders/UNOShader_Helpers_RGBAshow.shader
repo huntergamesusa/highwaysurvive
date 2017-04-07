@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 //Version=1.32
 Shader"UNOShader/_Library/Helpers/RGBAshow "
 {
@@ -59,7 +61,7 @@ Shader"UNOShader/_Library/Helpers/RGBAshow "
 				v2f o;
 				o.normalDir = fixed4 (0,0,0,0);								
 				o.normalDir.xyz = UnityObjectToWorldNormal(v.normal);				
-				o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
+				o.pos = UnityObjectToClipPos (v.vertex);
 				o.uv.xy = v.texcoord;								
 //				TRANSFER_VERTEX_TO_FRAGMENT(o)
 				return o;

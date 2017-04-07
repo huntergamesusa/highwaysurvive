@@ -14,9 +14,10 @@ public class TNTHelper : MonoBehaviour {
 
 	void OnTriggerEnter(Collider coll){
 		switch (coll.tag) {
-		case "zombieparent":
-			coll.GetComponent<AudioSource> ().PlayOneShot (boom);
-			TNTBoom ();
+		case "zombietrigger":
+			coll.transform.parent.GetComponent<AudioSource> ().PlayOneShot (boom);
+				TNTBoom ();
+
 			break;
 
 		case "car":
@@ -50,7 +51,8 @@ public class TNTHelper : MonoBehaviour {
 					switch (hit2.tag) {
 					case "zombieparent":
 						GameObject ragenable = hit2.transform.Find ("RagdollEnable").gameObject;
-						ragenable.GetComponent<EnableRagdoll> ().EngageRagdollZombie (Vector3.zero, true, transform.position);
+						ragenable.GetComponent<ZombieEnableRagdoll> ().EngageRagdollZombie (Vector3.zero, true, transform.position);
+				ScoringManager.UpdateScore (ScoringManager.myScores.killzombie, 1,hit2.transform.position);
 
 						break;
 

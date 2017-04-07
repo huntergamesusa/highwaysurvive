@@ -84,7 +84,7 @@ public class PlayerColliderManager : MonoBehaviour {
 			}
 			ScoringManager.UpdateCoins (mult);
 
-			ScoringManager.UpdateScore (25, mult);
+			ScoringManager.UpdateScore (25, mult,new Vector3(1000,1000,1000));
 			print (col.name);
 			break;
 		case "powerup":

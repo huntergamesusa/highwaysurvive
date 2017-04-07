@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 // Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 // Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
 
@@ -85,7 +87,7 @@ Shader"UNOShader/_Library/Helpers/Xray"
 				half3 normalDirection = normalize(half3( mul(half4(v.normal, 0.0), unity_WorldToObject).xyz ));
 				half3 lightDirection = normalize(half3(_WorldSpaceLightPos0.xyz));
 				float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - o.posWorld.xyz);// world space
-				o.pos = mul (UNITY_MATRIX_MVP, v.vertex);//UNITY_MATRIX_MVP is a matrix that will convert a model's vertex position to the projection space
+				o.pos = UnityObjectToClipPos (v.vertex);//UNITY_MATRIX_MVP is a matrix that will convert a model's vertex position to the projection space
 
                 o.color = fixed4(_XrayColor.rgb * _XrayIntensity,_XrayColor.a);
 

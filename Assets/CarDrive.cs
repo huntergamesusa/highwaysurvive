@@ -20,7 +20,7 @@ public class CarDrive : MonoBehaviour {
 	bool dead;
 	GameObject ragdollenable;
 	void Awake(){
-
+		Physics.IgnoreLayerCollision (12, 12, true);
 		speed = PlayerPrefs.GetFloat ("carspeed");
 
 		crashSoft = Resources.Load ("Sounds/vehicle_crash_small")as AudioClip;
@@ -77,7 +77,7 @@ public class CarDrive : MonoBehaviour {
 
 		if (explosion) {
 			GetComponent<Rigidbody>().AddExplosionForce(power, explosionPos, rad,upmod);
-			ScoringManager.UpdateScore (ScoringManager.myScores.killcar, 1);
+			ScoringManager.UpdateScore (ScoringManager.myScores.killcar, 1,transform.position);
 
 		}
 
@@ -122,12 +122,15 @@ public class CarDrive : MonoBehaviour {
 
 	public IEnumerator DestroyCar(int seconds){
 		yield return new  WaitForSeconds(seconds);
+		SpawnCars.carListSpawned.Add (int.Parse(gameObject.name));
 		Destroy (gameObject);
 	}
 	public void IgnoreColl(bool ign){
 		Physics.IgnoreCollision (GetComponent<MeshCollider> (), GameObject.Find ("RoadParentMiddle").GetComponent<BoxCollider> (), ign);
 		Physics.IgnoreCollision (GetComponent<MeshCollider> (), GameObject.Find ("RoadParentOther").GetComponent<BoxCollider> (), ign);
 		Physics.IgnoreCollision (GetComponent<MeshCollider> (), GameObject.Find ("RoadParentOther2").GetComponent<BoxCollider> (), ign);
+		Physics.IgnoreLayerCollision (12, 12, false);
+
 	}
 
 	void FixedUpdate(){

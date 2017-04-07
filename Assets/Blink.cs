@@ -4,10 +4,17 @@ using UnityEngine;
 using UnityEngine.UI;
 public class Blink : MonoBehaviour {
 	bool blinking=false;
-	Text startImg;
+
+	public delegate void startBlinkEventHandler (bool blinkme);
+	public static event startBlinkEventHandler blinkbool;
+
 	// Use this for initialization
 	void Awake () {
-		startImg = GetComponent < Text >();
+		Blink.blinkbool += this.MyBlink;
+	}
+
+	void MyBlink(bool blinkme){
+
 	}
 
 	void Update(){
@@ -16,16 +23,17 @@ public class Blink : MonoBehaviour {
 
 	void OnEnable(){
 		blinking = false;
-		startImg.enabled=true;
 	}
 	
 	public IEnumerator Blinkit(){
 		if(!blinking){
 			blinking=true;
+
 			yield return new WaitForSeconds (.5f);
-			startImg.enabled=false;
+			blinkbool (false);
 			yield return new WaitForSeconds (.5f);
-			startImg.enabled=true;
+			blinkbool (true);
+
 			blinking=false;
 
 		}

@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 //Version=1.7
 Shader"UNOShader/_Library/UNLIT/UNOShaderUNLIT Color Diffuse Outline "
 {
@@ -129,7 +131,7 @@ Shader"UNOShader/_Library/UNLIT/UNOShaderUNLIT Color Diffuse Outline "
 				half3 lightDirection = normalize(half3(_WorldSpaceLightPos0.xyz));
 				float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - o.posWorld.xyz);// world space
 
-				o.pos = mul (UNITY_MATRIX_MVP, v.vertex);//UNITY_MATRIX_MVP is a matrix that will convert a model's vertex position to the projection space
+				o.pos = UnityObjectToClipPos (v.vertex);//UNITY_MATRIX_MVP is a matrix that will convert a model's vertex position to the projection space
 				o.vc = fixed4(1,1,1,1);;// Vertex Colors
 				o.uv = fixed4(0,0,0,0);
 				o.uv.xy = TRANSFORM_TEX (v.texcoord, _MainTex); // this allows you to offset uvs and such	

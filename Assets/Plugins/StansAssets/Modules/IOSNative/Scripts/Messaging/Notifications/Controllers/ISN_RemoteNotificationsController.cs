@@ -1,4 +1,4 @@
-//#define PUSH_ENABLED
+#define PUSH_ENABLED
 
 using System;
 using UnityEngine;

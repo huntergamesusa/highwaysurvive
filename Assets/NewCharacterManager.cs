@@ -9,7 +9,7 @@ public class NewCharacterManager : MonoBehaviour {
 
 	public static Dictionary <Material, Mesh> myCharacters = new Dictionary<Material, Mesh> ();
 
-	public List<Material> myMat = new List<Material> ();
+	public static List<Material> myMat = new List<Material> ();
 
 	int index;
 
@@ -36,7 +36,7 @@ public class NewCharacterManager : MonoBehaviour {
 	}
 
 
-					Mesh SendMesh(string matname){
+	Mesh SendMesh(string matname){
 
 						switch(matname){
 		case "snowyMAT":

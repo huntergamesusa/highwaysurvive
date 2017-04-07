@@ -13,6 +13,8 @@ public class KillGameObject : MonoBehaviour {
 	void OnTriggerEnter (Collider coll) {
 		if (coll.tag == "car") {
 			Destroy (coll.gameObject);
+			SpawnCars.carListSpawned.Add (int.Parse(coll.gameObject.name));
+
 			print ("killed car");
 		}
 	}

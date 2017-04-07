@@ -2,6 +2,7 @@
 using System.Collections;
 using System;
 using UnityEngine.UI;
+using TMPro;
 //using UnionAssets.FLE;
 
 #if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5 || UNITY_4_6
@@ -14,9 +15,11 @@ using UnityEngine.iOS;
 public class TimeReward : MonoBehaviour {
 	public DateTime unbiasedTimerEndTimestamp;
 	public Text timeLeft;
+	public GameObject GameRewardCanvas;
+	public GameObject CoinAmountTXT;
 	public ParticleSystem myCoinExplode;
 	public GameObject freeGiftStart;
-
+	public AudioClip coinsound;
 	private int lastNotificationId = 0;
 	private int randomGiftAct;
 
@@ -25,7 +28,11 @@ public class TimeReward : MonoBehaviour {
 
 	// Use this for initialization
 	void Awake () {
+		ISN_LocalNotificationsController.OnLocalNotificationReceived += HandleOnLocalNotificationReceived;
+		if(ISN_LocalNotificationsController.Instance.LaunchNotification != null) {
+			ISN_LocalNotification notification = ISN_LocalNotificationsController.Instance.LaunchNotification;
 
+		}
 		// Read PlayerPrefs to restore scheduled timers
 		// By default initiliaze both timers in 60 seconds from now
 //		IOSNativeUtility.SetApplicationBagesNumber(0);
@@ -52,6 +59,9 @@ public class TimeReward : MonoBehaviour {
 			freeGiftStart.SetActive (false);
 
 		}
+
+	}
+	void HandleOnLocalNotificationReceived (ISN_LocalNotification notification) {
 
 	}
 
@@ -96,11 +106,12 @@ public class TimeReward : MonoBehaviour {
 
 
 	void Update(){
-//		if (Input.GetKeyUp (KeyCode.T)) {
+		if (Input.GetKeyUp (KeyCode.T)) {
 //			StartCoroutine("giftExpensedResetTime");
 ////			 giftExpensedResetTime();
 //
-//		}
+			StartCoroutine(CoinAnim(500));
+		}
 //
 //		if(Input.GetKeyUp(KeyCode.O)){
 //			UnbiasedTime.Instance.Now ().AddSeconds (5);
@@ -254,8 +265,12 @@ public class TimeReward : MonoBehaviour {
 				this.WriteTimestamp("unbiasedTimer", unbiasedTimerEndTimestamp);
 
 
-		
-			int NotificationId = UM_NotificationController.Instance.ScheduleLocalNotification("Buddy Toss",SmartLocalization_Nate.claimGiftTrans, 3*60);
+			ISN_LocalNotificationsController.OnNotificationScheduleResult += OnNotificationScheduleResult;
+			ISN_LocalNotification notification =  new ISN_LocalNotification(DateTime.Now.AddSeconds(3*60),"Claim your Gift", false);
+			notification.Schedule();
+			lastNotificationId = notification.Id;
+
+//		 UM_NotificationController.Instance.ScheduleLocalNotification("Streets of Zombies",SmartLocalization_Nate.claimGiftTrans, 3*60);
  
 //			PlayerPrefs.SetInt ("notificationID", lastNotificationId);
 			}
@@ -269,7 +284,11 @@ public class TimeReward : MonoBehaviour {
 			unbiasedTimerEndTimestamp =  UnbiasedTime.Instance.Now().AddMinutes(6);
 			this.WriteTimestamp("unbiasedTimer", unbiasedTimerEndTimestamp);
 
-			int NotificationId = UM_NotificationController.Instance.ScheduleLocalNotification("Buddy Toss",SmartLocalization_Nate.claimGiftTrans,6*60);
+			ISN_LocalNotificationsController.OnNotificationScheduleResult += OnNotificationScheduleResult;
+			ISN_LocalNotification notification =  new ISN_LocalNotification(DateTime.Now.AddSeconds(6*60),"Claim your Gift", false);
+			notification.Schedule();
+			lastNotificationId = notification.Id;
+//			 UM_NotificationController.Instance.ScheduleLocalNotification("Streets of Zombies",SmartLocalization_Nate.claimGiftTrans,6*60);
 
 			
 		}
@@ -280,7 +299,11 @@ public class TimeReward : MonoBehaviour {
 			unbiasedTimerEndTimestamp = UnbiasedTime.Instance.Now().AddMinutes(30);
 			this.WriteTimestamp("unbiasedTimer", unbiasedTimerEndTimestamp);
 
-			int NotificationId = UM_NotificationController.Instance.ScheduleLocalNotification("Buddy Toss",SmartLocalization_Nate.claimGiftTrans, 30*60);
+			ISN_LocalNotificationsController.OnNotificationScheduleResult += OnNotificationScheduleResult;
+			ISN_LocalNotification notification =  new ISN_LocalNotification(DateTime.Now.AddSeconds(30*60),"Claim your Gift", false);
+			notification.Schedule();
+			lastNotificationId = notification.Id;
+//			 UM_NotificationController.Instance.ScheduleLocalNotification("Streets of Zombies",SmartLocalization_Nate.claimGiftTrans, 30*60);
 
 		}
 		if(PlayerPrefs.GetInt("Gifts")==4 && unbiasedRemaining.TotalSeconds <= 0){
@@ -290,7 +313,11 @@ public class TimeReward : MonoBehaviour {
 			unbiasedTimerEndTimestamp =  UnbiasedTime.Instance.Now().AddMinutes(60);
 			this.WriteTimestamp("unbiasedTimer", unbiasedTimerEndTimestamp);
 
-			int NotificationId = UM_NotificationController.Instance.ScheduleLocalNotification("Buddy Toss",SmartLocalization_Nate.claimGiftTrans, 60*60);
+			ISN_LocalNotificationsController.OnNotificationScheduleResult += OnNotificationScheduleResult;
+			ISN_LocalNotification notification =  new ISN_LocalNotification(DateTime.Now.AddSeconds(60*60),"Claim your Gift", false);
+			notification.Schedule();
+			lastNotificationId = notification.Id;
+//			 UM_NotificationController.Instance.ScheduleLocalNotification("Streets of Zombies",SmartLocalization_Nate.claimGiftTrans, 60*60);
 
 		}
 		if(PlayerPrefs.GetInt("Gifts")==5 && unbiasedRemaining.TotalSeconds <= 0){
@@ -299,8 +326,11 @@ public class TimeReward : MonoBehaviour {
 
 			unbiasedTimerEndTimestamp =  UnbiasedTime.Instance.Now().AddMinutes(120);
 			this.WriteTimestamp("unbiasedTimer", unbiasedTimerEndTimestamp);
-
-			int NotificationId = UM_NotificationController.Instance.ScheduleLocalNotification("Buddy Toss",SmartLocalization_Nate.claimGiftTrans, 120*60);
+			ISN_LocalNotificationsController.OnNotificationScheduleResult += OnNotificationScheduleResult;
+			ISN_LocalNotification notification =  new ISN_LocalNotification(DateTime.Now.AddSeconds(120*60),"Claim your Gift", false);
+			notification.Schedule();
+			lastNotificationId = notification.Id;
+//		 UM_NotificationController.Instance.ScheduleLocalNotification("Streets of Zombies",SmartLocalization_Nate.claimGiftTrans, 120*60);
 
 			
 		}
@@ -310,8 +340,11 @@ public class TimeReward : MonoBehaviour {
 
 			unbiasedTimerEndTimestamp =  UnbiasedTime.Instance.Now().AddMinutes(180);
 			this.WriteTimestamp("unbiasedTimer", unbiasedTimerEndTimestamp);
-
-			int NotificationId = UM_NotificationController.Instance.ScheduleLocalNotification("Buddy Toss",SmartLocalization_Nate.claimGiftTrans,180*60);
+			ISN_LocalNotificationsController.OnNotificationScheduleResult += OnNotificationScheduleResult;
+			ISN_LocalNotification notification =  new ISN_LocalNotification(DateTime.Now.AddSeconds(180*60),"Claim your Gift", false);
+			notification.Schedule();
+			lastNotificationId = notification.Id;
+//			 UM_NotificationController.Instance.ScheduleLocalNotification("Streets of Zombies",SmartLocalization_Nate.claimGiftTrans,180*60);
 
 		}
 		if(PlayerPrefs.GetInt("Gifts")==7 && unbiasedRemaining.TotalSeconds <= 0){
@@ -320,8 +353,11 @@ public class TimeReward : MonoBehaviour {
 
 			unbiasedTimerEndTimestamp =  UnbiasedTime.Instance.Now().AddMinutes(240);
 			this.WriteTimestamp("unbiasedTimer", unbiasedTimerEndTimestamp);
-
-			int NotificationId = UM_NotificationController.Instance.ScheduleLocalNotification("Buddy Toss",SmartLocalization_Nate.claimGiftTrans,240*60);
+			ISN_LocalNotificationsController.OnNotificationScheduleResult += OnNotificationScheduleResult;
+			ISN_LocalNotification notification =  new ISN_LocalNotification(DateTime.Now.AddSeconds(240*60),"Claim your Gift", false);
+			notification.Schedule();
+			lastNotificationId = notification.Id;
+//			UM_NotificationController.Instance.ScheduleLocalNotification("Streets of Zombies",SmartLocalization_Nate.claimGiftTrans,240*60);
 
 			
 		}
@@ -331,8 +367,11 @@ public class TimeReward : MonoBehaviour {
 
 			unbiasedTimerEndTimestamp =  UnbiasedTime.Instance.Now().AddMinutes(300);
 			this.WriteTimestamp("unbiasedTimer", unbiasedTimerEndTimestamp);
-
-			int NotificationId = UM_NotificationController.Instance.ScheduleLocalNotification("Buddy Toss",SmartLocalization_Nate.claimGiftTrans, 300*60);
+			ISN_LocalNotificationsController.OnNotificationScheduleResult += OnNotificationScheduleResult;
+			ISN_LocalNotification notification =  new ISN_LocalNotification(DateTime.Now.AddSeconds(300*60),"Claim your Gift", false);
+			notification.Schedule();
+			lastNotificationId = notification.Id;
+//			UM_NotificationController.Instance.ScheduleLocalNotification("Streets of Zombies",SmartLocalization_Nate.claimGiftTrans, 300*60);
 
 			
 			
@@ -342,8 +381,11 @@ public class TimeReward : MonoBehaviour {
 			print ("wait 6 hours");
 			unbiasedTimerEndTimestamp =  UnbiasedTime.Instance.Now().AddMinutes(360);
 			this.WriteTimestamp("unbiasedTimer", unbiasedTimerEndTimestamp);
-
-			int NotificationId = UM_NotificationController.Instance.ScheduleLocalNotification("Buddy Toss",SmartLocalization_Nate.claimGiftTrans, 360*60);
+			ISN_LocalNotificationsController.OnNotificationScheduleResult += OnNotificationScheduleResult;
+			ISN_LocalNotification notification =  new ISN_LocalNotification(DateTime.Now.AddSeconds(360*60),"Claim your Gift", false);
+			notification.Schedule();
+			lastNotificationId = notification.Id;
+//			 UM_NotificationController.Instance.ScheduleLocalNotification("Streets of Zombies",SmartLocalization_Nate.claimGiftTrans, 360*60);
 
 			
 		}
@@ -354,10 +396,6 @@ public class TimeReward : MonoBehaviour {
 
 
 
-		//needed incause game is paused
-		freeGiftStart.SetActive (false);
-
-		myCoinExplode.Play ();
 
 //		GameObject UISound = GameObject.Find ("UIButtonSounds");
 //		UISound.GetComponent<AudioSource> ().PlayOneShot (punchSound);
@@ -375,6 +413,8 @@ public class TimeReward : MonoBehaviour {
 		if(randomGift<=86){
 			randomGiftAct = UnityEngine.Random.Range (40,60);
 			}
+		StartCoroutine(CoinAnim (randomGift));
+
 		ScoringManager.UpdateCoins (randomGiftAct);
 
 		//make sure time is displayed after receiving wared
@@ -384,7 +424,25 @@ public class TimeReward : MonoBehaviour {
 	}
 
 
+	IEnumerator CoinAnim(int coins){
+		myCoinExplode.Stop ();
+		freeGiftStart.SetActive (false);
+		myCoinExplode.transform.parent.GetComponent<Camera> ().enabled = true;
+		myCoinExplode.Play ();
+		print (myCoinExplode.time);
+		GameRewardCanvas.SetActive (true);
+		CoinAmountTXT.GetComponent<TextMeshProUGUI> ().text = coins.ToString ();
+		LeanTween.scale (CoinAmountTXT, new Vector3 (1, 1, 1), .6f).setEaseOutBounce ();
+		LeanTween.scale (CoinAmountTXT, new Vector3 (0, 0, 0), .3f).setEaseInBounce ().setDelay(2f);
+		yield return new  WaitForSeconds(.2f);
+		CoinAmountTXT.GetComponent<AudioSource> ().Play ();
 
+		for(int i=0; i<=25;i++){
+			yield return new  WaitForSeconds(.07f);
+
+			CoinAmountTXT.GetComponent<AudioSource> ().PlayOneShot(coinsound,.75f);
+		}
+	}
 
 
 
@@ -401,7 +459,10 @@ public class TimeReward : MonoBehaviour {
 	}
 
 
+	private void OnNotificationScheduleResult (SA.Common.Models.Result res) {
+		ISN_LocalNotificationsController.OnNotificationScheduleResult -= OnNotificationScheduleResult;
 
+	}
 
 
 

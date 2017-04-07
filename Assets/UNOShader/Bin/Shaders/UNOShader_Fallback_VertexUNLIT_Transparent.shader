@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 // Upgrade NOTE: commented out 'float4 unity_LightmapST', a built-in variable
 // Upgrade NOTE: commented out 'sampler2D unity_Lightmap', a built-in variable
 // Upgrade NOTE: commented out 'sampler2D unity_LightmapInd', a built-in variable
@@ -52,7 +54,7 @@ Shader "UNOShader/_Library/Helpers/VertexUNLIT Transparent"
 			v2f vert (customData v)
 			{
 				v2f o;
-				o.pos = 	mul (UNITY_MATRIX_MVP, v.vertex);
+				o.pos = 	UnityObjectToClipPos (v.vertex);
 				o.vc = v.color;
 				o.uv = fixed4(0,0,0,0);
 				o.uv.xy =		TRANSFORM_TEX (v.texcoord, _MainTex); // this allows you to offset uvs and such
@@ -117,7 +119,7 @@ Shader "UNOShader/_Library/Helpers/VertexUNLIT Transparent"
 			v2f vert (customData v)
 			{
 				v2f o;
-				o.pos = 	mul (UNITY_MATRIX_MVP, v.vertex);
+				o.pos = 	UnityObjectToClipPos (v.vertex);
 				o.vc = v.color;
 				o.uv = fixed4(0,0,0,0);
 				o.uv.xy =		TRANSFORM_TEX (v.texcoord, _MainTex); // this allows you to offset uvs and such
@@ -185,7 +187,7 @@ Shader "UNOShader/_Library/Helpers/VertexUNLIT Transparent"
 			v2f vert (customData v)
 			{
 				v2f o;
-				o.pos = 	mul (UNITY_MATRIX_MVP, v.vertex);
+				o.pos = 	UnityObjectToClipPos (v.vertex);
 				o.vc = v.color;
 				o.uv = fixed4(0,0,0,0);
 				o.uv.xy =		TRANSFORM_TEX (v.texcoord, _MainTex); // this allows you to offset uvs and such

@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 //Version=1
 Shader"UNOShader/_Library/Helpers/Outlines"
 {
@@ -114,7 +116,7 @@ Shader"UNOShader/_Library/Helpers/Outlines"
 				//	vertexOutline.y = v.vertex.y + v.normal.y *_OutlineY;
 				//	vertexOutline.z = v.vertex.z + v.normal.z *(_OutlineX *_OutlineY);
 				//#endif		
-				o.pos = mul(UNITY_MATRIX_MVP, float4(vertexOutline, 1));
+				o.pos = UnityObjectToClipPos(float4(vertexOutline, 1));
 
 				//--------  geometry scale camera technique --------------
 				//o.pos = mul(UNITY_MATRIX_MVP, normalize(v.vertex));
@@ -237,7 +239,7 @@ Shader"UNOShader/_Library/Helpers/Outlines"
             v2f vert(customData v)
             {
                 v2f o;
-                o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
+                o.pos = UnityObjectToClipPos (v.vertex);
                 float3 norm   = mul ((float3x3)UNITY_MATRIX_IT_MV, v.normal);
                 float2 offset = TransformViewToProjection(norm.xy);
                 float ortho = .1;
@@ -330,7 +332,7 @@ Shader"UNOShader/_Library/Helpers/Outlines"
             v2f vert(customData v)
             {
                 v2f o;
-                o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
+                o.pos = UnityObjectToClipPos (v.vertex);
                 o.uv =		TRANSFORM_TEX (v.texcoord, _OutlineTex); // this allows you to offset uvs and such
                 float3 norm   = mul ((float3x3)UNITY_MATRIX_IT_MV, v.normal);
                 float2 offset = TransformViewToProjection(norm.xy);

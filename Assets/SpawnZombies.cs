@@ -56,12 +56,13 @@ public class SpawnZombies : MonoBehaviour {
 			myEuler = Quaternion.Euler  (0, 0, 0);
 
 		}
+//		GameObject thisCoin = Instantiate (spawnable, new Vector3(0,0,0),myEuler )as GameObject;
 
 		GameObject thisCoin = Instantiate (spawnable, locCoin,myEuler )as GameObject;
 	
 		thisCoin.name = "myzombie" + randomZombie;
 		activeZombies.Add (thisCoin);
-		if (activeZombies.Count >6) {
+		if (activeZombies.Count > PlayerPrefs.GetInt("MaxZombies")) {
 
 			DestroyImmediate (activeZombies [0], true);
 			activeZombies.Remove (activeZombies [0]);
@@ -80,22 +81,22 @@ public class SpawnZombies : MonoBehaviour {
 		int temp;
 
 
-		if(positionZombies.TryGetValue("myzombie"+randomZombie,out temp)){
-			if (temp == 0) {
-				positionZombies["myzombie" + randomZombie]= 1;
-
-
-			} else {
-				print ("reran spawn");
-				DestroyImmediate (activeZombies [activeZombies.Count-1], true);
-				activeZombies.Remove (activeZombies [activeZombies.Count-1]);
-				InitZombie ();
-			
-			}
-		}
-			else{
-
-			}
+//		if(positionZombies.TryGetValue("myzombie"+randomZombie,out temp)){
+//			if (temp == 0) {
+//				positionZombies["myzombie" + randomZombie]= 1;
+//
+//
+//			} else {
+//				print ("reran spawn");
+//				DestroyImmediate (activeZombies [activeZombies.Count-1], true);
+//				activeZombies.Remove (activeZombies [activeZombies.Count-1]);
+//				InitZombie ();
+//			
+//			}
+//		}
+//			else{
+//
+//			}
 
 		return coinLocation;
 	}
@@ -111,7 +112,7 @@ public class SpawnZombies : MonoBehaviour {
 					Destroy (activeZombies [i]);
 				
 				activeZombies.Remove (activeZombies [i]);
-				positionZombies [thisZombie] = 0;
+//				positionZombies [thisZombie] = 0;
 //				}
 //				positionZombies.Remove (activeZombies [i].name);
 //				positionZombies.Add (activeZombies [i].name,0);

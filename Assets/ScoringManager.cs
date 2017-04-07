@@ -7,7 +7,7 @@ using System;
 
 public class ScoresModel {
 	public int killzombie = 100;
-	public int killcar =100;
+	public int killcar =250;
 	public int coinpickup =25;
 
 }
@@ -19,7 +19,7 @@ public class ScoringManager : MonoBehaviour {
 	public static Text ingamescore;
 	public static Text distanceScoreTXT;
 	public static Text coinsTXT;
-
+	public static GameObject scoreInGameUI;
 	public static int score;
 	public static float distance;
 
@@ -29,7 +29,7 @@ public class ScoringManager : MonoBehaviour {
 
 
 	void Awake () {
-		
+		scoreInGameUI = Resources.Load ("ScoreTextPrefab") as GameObject;
 
 		ingamescore = GameObject.Find ("GameScore").GetComponent<Text>();
 		distanceScoreTXT = GameObject.Find ("DistanceScore").GetComponent<Text>();
@@ -45,14 +45,19 @@ public class ScoringManager : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	public static void UpdateScore (int mainscore, int mult) {
+	public static void UpdateScore (int mainscore, int mult, Vector3 pos) {
 		ingamescore.transform.localScale = new Vector3 (1, 1, 1);
 		print (mainscore);
 		score += (mainscore * mult);
-		LeanTween.scale (ingamescore.GetComponent<RectTransform> (), new Vector2 (1.35f, 1.35f), .15f).setEaseInOutSine ();
+		LeanTween.scale (ingamescore.GetComponent<RectTransform> (), new Vector2 (1.5f, 1.5f), .15f).setEaseInOutSine ();
 		LeanTween.scale (ingamescore.GetComponent<RectTransform> (), new Vector2 (1f, 1f), .15f).setEaseOutSine ().setDelay(.15f);
 
 		ingamescore.text = score.ToString("#000000000");
+
+		if (pos != null) {
+			GameObject myScoreObj = Instantiate (scoreInGameUI, pos, Quaternion.identity) as GameObject;
+			myScoreObj.GetComponent<AnimatePointsObject> ().mypoints = mainscore*mult;
+		}
 
 
 	}
@@ -71,8 +76,8 @@ public class ScoringManager : MonoBehaviour {
 		//		ingamescore.transform.localScale = new Vector3 (1, 1, 1);
 		PlayerPrefs.SetInt ("Coins",PlayerPrefs.GetInt ("Coins")+cc);
 
-		//		LeanTween.scale (ingamescore.GetComponent<RectTransform> (), new Vector2 (1.35f, 1.35f), .15f).setEaseInOutSine ();
-		//		LeanTween.scale (ingamescore.GetComponent<RectTransform> (), new Vector2 (1f, 1f), .15f).setEaseOutSine ().setDelay(.15f);
+		LeanTween.scale (coinsTXT.GetComponent<RectTransform> (), new Vector2 (1.5f, 1.5f), .15f).setEaseInOutSine ();
+		LeanTween.scale (coinsTXT.GetComponent<RectTransform> (), new Vector2 (1f, 1f), .15f).setEaseOutSine ().setDelay(.15f);
 
 		coinsTXT.text = PlayerPrefs.GetInt ("Coins").ToString();
 

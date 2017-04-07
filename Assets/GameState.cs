@@ -16,6 +16,7 @@ public class GameState : MonoBehaviour {
 	public GameObject spawnC;
 	public GameObject spawnP;
 	public GameObject joystick;
+	public GameObject actionButtons;
 	public GameObject selectCanvas;
 	public GameObject MainMenu;
 	public GameObject powerupParent;
@@ -80,6 +81,7 @@ public class GameState : MonoBehaviour {
 		DestroyGO ("coin");
 		DestroyGO ("powerup");
 		DestroyGO ("tnt");
+		DestroyGO ("caution");
 
 		Destroy (spawnZom);
 		Destroy (spawnColl);
@@ -91,11 +93,15 @@ public class GameState : MonoBehaviour {
 		currentPlayer = newPlayer;
 		GameObject characterManage = GameObject.Find ("NewCharacterManager");
 		characterManage.SendMessage ("InitCharacterReceive", currentPlayer.transform.Find("MicroMale").gameObject);
+		currentPlayer.transform.Find ("PlayerIndicator").GetComponent<MeshRenderer> ().enabled = false;
 
 //		GameObject.Find ("PartSelectionController").SendMessage("RestartCharacter",currentPlayer.GetComponent<CharacterParts>());
 		CameraAnimations.target = currentPlayer.transform.GetChild(0).GetChild(0).gameObject;
 //		FollowZ.target = currentPlayer.transform.GetChild (0).gameObject;
 		joystick.SetActive (false);
+		if (actionButtons) {
+			actionButtons.SetActive (false);
+		}
 		MainMenu.SetActive (true);
 		CameraAnimations.ChangeCamera ("start");
 		EnableAlphaText (false, textObjects);
@@ -135,9 +141,13 @@ public class GameState : MonoBehaviour {
 
 
 		currentPlayer.GetComponent<BotControlScript> ().ReceiveJoystick (joystick.transform.GetChild (1), joystick.transform.GetChild (0));
+		if (actionButtons) {
+			currentPlayer.GetComponent<BotControlScript> ().ReceiveButtons (actionButtons.transform.GetChild (0).gameObject, actionButtons.transform.GetChild (1).gameObject);
+			actionButtons.SetActive (true);
 
+		}
 		currentPlayer.GetComponent<BotControlScript> ().enabled = true;
-
+		currentPlayer.transform.Find ("PlayerIndicator").GetComponent<MeshRenderer> ().enabled = true;
 		CameraAnimations.ChangeCamera ("ingame");
 		EnableAlphaText (true, textObjects);
 		foreach (GameObject obj in boundries) {
@@ -168,6 +178,7 @@ public class GameState : MonoBehaviour {
 		DestroyGO ("coin");
 		DestroyGO ("powerup");
 		DestroyGO ("tnt");
+		DestroyGO ("caution");
 
 		Destroy (spawnZom);
 		Destroy (spawnColl);
@@ -191,11 +202,15 @@ public class GameState : MonoBehaviour {
 		selectCanvas.SetActive (false);
 		CameraAnimations.ChangeCamera ("ingame");
 		joystick.SetActive (true);
+		if (actionButtons) {
+			actionButtons.SetActive (true);
+			currentPlayer.GetComponent<BotControlScript> ().ReceiveButtons (actionButtons.transform.GetChild (0).gameObject, actionButtons.transform.GetChild (1).gameObject);
+
+		}
 		selectCanvas.SetActive (false);
 	
 			currentPlayer.GetComponent<BotControlScript> ().enabled = true;
 			currentPlayer.GetComponent<BotControlScript> ().ReceiveJoystick (joystick.transform.GetChild (1), joystick.transform.GetChild (0));
-
 	}
 
 	void DestroyGO(string tag){

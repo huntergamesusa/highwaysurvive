@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;// Required when using Event data.
+
 // Require these components when using this script
 
 public class BotControlScript : MonoBehaviour
@@ -53,15 +55,101 @@ public class BotControlScript : MonoBehaviour
 	public AudioSource footstep;
 	ScoringManager theScoringManager;
 	public bool isKeyboard;
+	public bool isLandscape = false;
+	GameObject aButton;
+	GameObject bButton;
+	bool stickDown;
+	bool beginDrag;
 	public void ReceiveJoystick(Transform joy, Transform basecont){
 		baseController = basecont;
 		joystickController=joy;
 //	
-		joystickController.transform.parent.GetComponent<Button>().onClick.AddListener(()=>Attack(PlayerColliderManager.powerup));
+		if (!isLandscape) {
 
+			EventTrigger triggerstick = joystickController.transform.parent.GetComponent<EventTrigger> ();
+			EventTrigger.Entry entryStickDown = new EventTrigger.Entry ();
+			entryStickDown.eventID = EventTriggerType.PointerDown;
+			entryStickDown.callback.AddListener (( data) => {
+				OnPointerDownDelegateStick ((PointerEventData)data);
+			});
+			triggerstick.triggers.Add (entryStickDown);
+
+			EventTrigger.Entry entryStickUp = new EventTrigger.Entry ();
+			entryStickUp.eventID = EventTriggerType.PointerUp;
+			entryStickUp.callback.AddListener (( data) => {
+				OnPointerUpDelegateStick ((PointerEventData)data);
+			});
+			triggerstick.triggers.Add (entryStickUp);
+
+
+			EventTrigger.Entry entryStickDrag = new EventTrigger.Entry ();
+			entryStickDrag.eventID = EventTriggerType.BeginDrag;
+			entryStickDrag.callback.AddListener (( data) => {
+				OnPointerBeginDragDelegateStick ((PointerEventData)data);
+			});
+			triggerstick.triggers.Add (entryStickDrag);
+
+//			joystickController.transform.parent.GetComponent<Button> ().onClick.AddListener (() => Attack (PlayerColliderManager.powerup));
+		
+		
+		}
 
 	}
 
+	public void ReceiveButtons(GameObject abut, GameObject bbut){
+		if (isLandscape) {
+			
+			bButton = bbut;
+			aButton = abut;
+			EventTrigger trigger = aButton.GetComponent<EventTrigger> ();
+			EventTrigger.Entry entry = new EventTrigger.Entry ();
+			entry.eventID = EventTriggerType.PointerDown;
+			entry.callback.AddListener (( data) => {
+				OnPointerDownDelegateAButton ((PointerEventData)data);
+			});
+			trigger.triggers.Add (entry);
+
+
+			EventTrigger triggerB = bButton.GetComponent<EventTrigger> ();
+			EventTrigger.Entry entryB = new EventTrigger.Entry ();
+			entryB.eventID = EventTriggerType.PointerDown;
+			entryB.callback.AddListener (( data) => {
+				OnPointerDownDelegateBButton ((PointerEventData)data);
+			});
+			triggerB.triggers.Add (entryB);
+		}
+	}
+
+	public void OnPointerDownDelegateStick (PointerEventData eventData) 
+	{
+		stickDown = true;
+		print ("stick is down");
+	}
+	public void OnPointerUpDelegateStick (PointerEventData eventData) 
+	{		print ("stick is up");
+		beginDrag = false;
+
+		stickDown = false;
+
+		Attack (PlayerColliderManager.powerup);
+
+	}
+	public void OnPointerBeginDragDelegateStick (PointerEventData eventData) 
+	{		print ("beginning drag");
+		beginDrag = true;
+
+	}
+
+
+	public void OnPointerDownDelegateAButton (PointerEventData eventData) 
+	{
+		
+		StandardAttack ();
+	}
+	public void OnPointerDownDelegateBButton (PointerEventData eventData) 
+	{
+		Attack (PlayerColliderManager.powerup);
+	}
 	void Start(){
 
 		woosh = Resources.Load ("Sounds/woosh_2")as AudioClip;
@@ -73,10 +161,10 @@ public class BotControlScript : MonoBehaviour
 
 		if(myWeaponParent.transform.GetChild (0)!=null){
 		//.2
-		Vector3 adjustSlash = new Vector3(myWeaponParent.transform.GetChild (0).GetComponent<MeshFilter> ().mesh.bounds.size.z/.19f,myWeaponParent.transform.GetChild (0).GetComponent<MeshFilter> ().mesh.bounds.size.z/.19f,myWeaponParent.transform.GetChild (0).GetComponent<MeshFilter> ().mesh.bounds.size.z/.19f);
-		slashAnim.transform.localScale = adjustSlash;
+//		Vector3 adjustSlash = new Vector3(myWeaponParent.transform.GetChild (0).GetComponent<MeshFilter> ().mesh.bounds.size.z/.19f,myWeaponParent.transform.GetChild (0).GetComponent<MeshFilter> ().mesh.bounds.size.z/.19f,myWeaponParent.transform.GetChild (0).GetComponent<MeshFilter> ().mesh.bounds.size.z/.19f);
+//		slashAnim.transform.localScale = adjustSlash;
 		// initialising reference variables
-			myWeaponParent.transform.GetChild (0).GetComponent<MeshRenderer>().enabled=false;
+//			myWeaponParent.transform.GetChild (0).GetComponent<MeshRenderer>().enabled=false;
 		myWeaponParent.transform.GetChild (0).GetComponent<MeshCollider>().enabled=false;
 		}
 		anim = GetComponent<Animator>();					  
@@ -104,21 +192,53 @@ public class BotControlScript : MonoBehaviour
 			}
 		}
 		else{
-		dir = (baseController.position - joystickController.position).normalized;
-			dist = (Vector3.Distance (baseController.position, joystickController.position) / 26.625f)*1000;
-//		print (dist);
-		float zRotation_i = Mathf.Rad2Deg * Mathf.Atan2 (dir.y, dir.x);
-		if (dist > 01f) {
-			transform.eulerAngles = new Vector3 (transform.eulerAngles.x, -1 * zRotation_i - 90, transform.eulerAngles.z);
-		}
-//			print (dist);
+			if (stickDown&&beginDrag) {
+				dir = (baseController.position - joystickController.position).normalized;
+				dist = (Vector3.Distance (baseController.position, joystickController.position) / 26.625f) * 1000;
+				float zRotation_i = Mathf.Rad2Deg * Mathf.Atan2 (dir.y, dir.x);
+				transform.eulerAngles = new Vector3 (transform.eulerAngles.x, -1 * zRotation_i - 90, transform.eulerAngles.z);
+
+			} 
+			if(!stickDown){
+				dist = 0;
+			}
+//		dir = (baseController.position - joystickController.position).normalized;
+//			dist = (Vector3.Distance (baseController.position, joystickController.position) / 26.625f)*1000;
+//		float zRotation_i = Mathf.Rad2Deg * Mathf.Atan2 (dir.y, dir.x);
+//			if (dist > .1f) {
+//				transform.eulerAngles = new Vector3 (transform.eulerAngles.x, -1 * zRotation_i - 90, transform.eulerAngles.z);
+//			} else {
+//				dist = 0;
+//			}
 	}
+//		print (dist);
+
 
 	}
 
 
 	
+	public void StandardAttack(){
+			if (currentBaseState.fullPathHash == locoState) {
 
+				slashAnim.SetActive (true);
+				anim.SetBool ("Attack", true);
+				slashAnim.GetComponent<ParticleSystem> ().Play ();
+				GetComponent<AudioSource> ().PlayOneShot (woosh, Random.Range (.8f, 1));
+
+
+			}
+			if (currentBaseState.fullPathHash == idleState) {
+
+				anim.SetBool ("IdleAttack", true);
+				slashAnim.SetActive (true);
+				slashAnim.GetComponent<ParticleSystem> ().Play ();
+				GetComponent<AudioSource> ().PlayOneShot (woosh, Random.Range (.8f, 1));
+
+			}
+
+
+	}
 
 
 	public void Attack(string type){
@@ -157,24 +277,9 @@ public class BotControlScript : MonoBehaviour
 		default:
 			
 			PlayerColliderManager.powerup = "";
-		if (currentBaseState.fullPathHash == locoState) {
-
-				slashAnim.SetActive (true);
-				anim.SetBool ("Attack", true);
-				slashAnim.GetComponent<ParticleSystem>().Play();
-			GetComponent<AudioSource>().PlayOneShot(woosh,Random.Range(.8f,1));
-
-
-		}
-		if (currentBaseState.fullPathHash == idleState) {
-
-				anim.SetBool ("IdleAttack", true);
-				slashAnim.SetActive (true);
-				slashAnim.GetComponent<ParticleSystem>().Play();
-			GetComponent<AudioSource>().PlayOneShot(woosh,Random.Range(.8f,1));
-
+			if (!isLandscape) {
+				StandardAttack ();
 			}
-	
 		break;
 		}
 
@@ -266,14 +371,14 @@ IEnumerator MagnetStart(){
 
 		ragdollenable.PauseZombie (true);
 		transform.Find ("BigPowerup").gameObject.SetActive (true);
-		LeanTween.scale (gameObject, new Vector3 (34, 34, 34), .3f).setEaseInOutCirc ();
+		LeanTween.scale (gameObject, new Vector3 (9, 9, 9), .3f).setEaseInOutCirc ();
 		yield return new WaitForSeconds (10);
 		isBig=false;
 		ragdollenable.PauseZombie (false);
 		transform.Find ("BigPowerup").gameObject.SetActive (false);
 		GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation;
 
-		LeanTween.scale (gameObject, new Vector3 (11.42057f, 11.42057f, 11.42057f), .3f).setEaseInOutCirc ();
+		LeanTween.scale (gameObject, new Vector3 (3.008652f, 3.008652f, 3.008652f), .3f).setEaseInOutCirc ();
 
 	}
 
@@ -298,7 +403,7 @@ IEnumerator MagnetStart(){
 			switch (hit2.tag) {
 			case "zombieparent":
 				GameObject ragenable = hit2.transform.Find ("RagdollEnable").gameObject;
-				ragenable.GetComponent<EnableRagdoll> ().EngageRagdollZombie (Vector3.zero, true, transform.position);
+				ragenable.GetComponent<ZombieEnableRagdoll> ().EngageRagdollZombie (Vector3.zero, true, transform.position);
 
 				break;
 
@@ -336,11 +441,11 @@ IEnumerator MagnetStart(){
 		if(anim.layerCount ==2)		
 			layer2CurrentState = anim.GetCurrentAnimatorStateInfo(1);
 		if (currentBaseState.fullPathHash == locoState) {
-//			footstep.volume = 1;
+			footstep.volume = 1;
 			if (isBig) {
 				footstep.pitch = anim.GetFloat ("Speed")/1.25f;
 			} else {
-				footstep.pitch = anim.GetFloat ("Speed");
+				footstep.pitch = anim.GetFloat ("Speed")*1.5f;
 
 			}
 			if (myWeaponParent.transform.GetChild (0) != null) {
