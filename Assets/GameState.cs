@@ -93,6 +93,8 @@ public class GameState : MonoBehaviour {
 		currentPlayer = newPlayer;
 		GameObject characterManage = GameObject.Find ("NewCharacterManager");
 		characterManage.SendMessage ("InitCharacterReceive", currentPlayer.transform.Find("MicroMale").gameObject);
+		characterManage.SendMessage ("InitWeaponReceive", currentPlayer.transform.Find("Armature/Root/Spine/Spine1/Spine2/RightShoulder/RightArm/WeaponR_Parent/WeaponMyCharacter").gameObject);
+
 		currentPlayer.transform.Find ("PlayerIndicator").GetComponent<MeshRenderer> ().enabled = false;
 
 //		GameObject.Find ("PartSelectionController").SendMessage("RestartCharacter",currentPlayer.GetComponent<CharacterParts>());
@@ -196,7 +198,16 @@ public class GameState : MonoBehaviour {
 		GameObject newPlayer = Instantiate (mainPlayer, startTrans.position, Quaternion.Euler (startTrans.eulerAngles));
 		newPlayer.name = "EmptyBody";
 		currentPlayer = newPlayer;
-		GameObject.Find ("NewCharacterManager").SendMessage ("InitCharacter");
+
+		GameObject characterManage = GameObject.Find ("NewCharacterManager");
+
+		characterManage.SendMessage ("InitCharacterReceive", currentPlayer.transform.Find("MicroMale").gameObject);
+		characterManage.SendMessage ("InitWeaponReceive", currentPlayer.transform.Find("Armature/Root/Spine/Spine1/Spine2/RightShoulder/RightArm/WeaponR_Parent/WeaponMyCharacter").gameObject);
+
+		currentPlayer.transform.Find ("PlayerIndicator").GetComponent<MeshRenderer> ().enabled = true;
+
+
+
 		CameraAnimations.target = currentPlayer.transform.GetChild(0).GetChild(0).gameObject;
 		FollowZ.target = currentPlayer.transform.GetChild (0).gameObject;
 		selectCanvas.SetActive (false);

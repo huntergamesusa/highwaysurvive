@@ -8,14 +8,15 @@ public class ManagerSelector : MonoBehaviour {
 	bool beforeProjection = false;
 	float tmpNearClipPlane = -1;
 	
-	void Start(){
-		canvas = gameObject.GetComponent<Canvas>();
-		canvas.enabled = false;
-		transform.FindChild ("Panel").gameObject.SetActive (false);
+	void Awake(){
+//		canvas.enabled = false;
+//		transform.FindChild ("Panel").gameObject.SetActive (false);
 
 	}
 
 	public void clickCanvas(){
+		canvas = gameObject.GetComponent<Canvas>();
+
 		canvas.enabled = !canvas.enabled;
 		transform.FindChild ("Panel").gameObject.SetActive (canvas.enabled);
 

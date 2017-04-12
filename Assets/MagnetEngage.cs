@@ -10,7 +10,7 @@ public class MagnetEngage : MonoBehaviour {
 		if (BotControlScript.magnetPowerUp) {
 			
 			if (attract) {
-				transform.parent.position = Vector3.MoveTowards (transform.parent.position, new Vector3 (target.position.x, transform.parent.position.y, target.position.z), Time.deltaTime * 50);
+				transform.parent.position = Vector3.MoveTowards (transform.parent.position, new Vector3 (target.position.x, -0.1827998f, target.position.z), Time.deltaTime * 50);
 			}
 		}
 	}

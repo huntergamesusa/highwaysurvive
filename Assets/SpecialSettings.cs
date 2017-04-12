@@ -13,7 +13,7 @@ public class SpecialSettings : MonoBehaviour {
 			PlayerPrefs.SetFloat ("animspeed", 1.25f);
 		}
 		if (!PlayerPrefs.HasKey ("carspeed")) {
-			PlayerPrefs.SetFloat ("carspeed", 15f);
+			PlayerPrefs.SetFloat ("carspeed", 50f);
 		}
 		if (!PlayerPrefs.HasKey ("MinCarTime")) {
 			PlayerPrefs.SetFloat ("MinCarTime", 5f);
