@@ -158,7 +158,11 @@ public class GameState : MonoBehaviour {
 		}
 	}
 
-	public void ReplaySameGame(){
+	public void ReplaySameGame(bool restart){
+		if (restart) {
+			ScoringManager.ResetScore ();
+		}
+
 		print ("replay");
 		OverridePutBackPowerup ();
 //		System.GC.Collect ();

@@ -40,7 +40,7 @@ public class ScoringManager : MonoBehaviour {
 		score = 0;
 		distanceScoreTXT.text = distance.ToString ("f0") + "M";
 		coinsTXT.text = PlayerPrefs.GetInt ("Coins").ToString();
-		ingamescore.text = score.ToString("#000000000");
+		ingamescore.text = score.ToString();
 
 	}
 	
@@ -51,8 +51,9 @@ public class ScoringManager : MonoBehaviour {
 		score += (mainscore * mult);
 		LeanTween.scale (ingamescore.GetComponent<RectTransform> (), new Vector2 (1.5f, 1.5f), .15f).setEaseInOutSine ();
 		LeanTween.scale (ingamescore.GetComponent<RectTransform> (), new Vector2 (1f, 1f), .15f).setEaseOutSine ().setDelay(.15f);
+		ingamescore.text = score.ToString();
 
-		ingamescore.text = score.ToString("#000000000");
+//		ingamescore.text = score.ToString("#000000000");
 
 		if (pos != null) {
 			GameObject myScoreObj = Instantiate (scoreInGameUI, pos, Quaternion.identity) as GameObject;

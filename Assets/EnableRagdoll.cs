@@ -61,6 +61,7 @@ public class EnableRagdoll : MonoBehaviour {
 	void EngageRagdoll(){
 		if (!isKilled) {
 			isKilled = true;
+			GameObject.Find ("GameOver").SendMessage ("GameEnded");
 			FollowZ.target = null;
 			Physics.IgnoreLayerCollision (9, 12, false);
 			transform.parent.GetComponent<Animator> ().enabled = false;
