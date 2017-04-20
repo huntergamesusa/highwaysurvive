@@ -22,15 +22,31 @@ public class ScoringManager : MonoBehaviour {
 	public static GameObject scoreInGameUI;
 	public static int score;
 	public static float distance;
-
+	public static bool isGameOver;
+	public GameOver myGameOverScript;
 	// Use this for initialization
 
 
 
 
-	void Awake () {
-		scoreInGameUI = Resources.Load ("ScoreTextPrefab") as GameObject;
+	void GameOverDelegate(bool isCurrentGameOver){
+		isGameOver = isCurrentGameOver;
 
+		if (isCurrentGameOver) {
+			if (score > PlayerPrefs.GetInt ("HighScore")) {
+				PlayerPrefs.SetInt ("HighScore", score);
+
+			}
+			myGameOverScript.GetScoringInfo(score,PlayerPrefs.GetInt ("HighScore"),PlayerPrefs.GetInt ("Coins"));
+
+		}
+
+	}
+
+	void Awake () {
+		GameOver.isGameOver += this.GameOverDelegate;
+
+		scoreInGameUI = Resources.Load ("ScoreTextPrefab") as GameObject;
 		ingamescore = GameObject.Find ("GameScore").GetComponent<Text>();
 		distanceScoreTXT = GameObject.Find ("DistanceScore").GetComponent<Text>();
 		coinsTXT = GameObject.Find ("CoinText").GetComponent<Text> ();
@@ -46,24 +62,31 @@ public class ScoringManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	public static void UpdateScore (int mainscore, int mult, Vector3 pos) {
-		ingamescore.transform.localScale = new Vector3 (1, 1, 1);
-		print (mainscore);
-		score += (mainscore * mult);
-		LeanTween.scale (ingamescore.GetComponent<RectTransform> (), new Vector2 (1.5f, 1.5f), .15f).setEaseInOutSine ();
-		LeanTween.scale (ingamescore.GetComponent<RectTransform> (), new Vector2 (1f, 1f), .15f).setEaseOutSine ().setDelay(.15f);
-		ingamescore.text = score.ToString();
+		if (isGameOver)
+			return;
+
+			ingamescore.transform.localScale = new Vector3 (1, 1, 1);
+			print (mainscore);
+			score += (mainscore * mult);
+			LeanTween.scale (ingamescore.GetComponent<RectTransform> (), new Vector2 (1.5f, 1.5f), .15f).setEaseInOutSine ();
+			LeanTween.scale (ingamescore.GetComponent<RectTransform> (), new Vector2 (1f, 1f), .15f).setEaseOutSine ().setDelay (.15f);
+			ingamescore.text = score.ToString ();
 
 //		ingamescore.text = score.ToString("#000000000");
 
-		if (pos != null) {
-			GameObject myScoreObj = Instantiate (scoreInGameUI, pos, Quaternion.identity) as GameObject;
-			myScoreObj.GetComponent<AnimatePointsObject> ().mypoints = mainscore*mult;
-		}
+			if (pos != null) {
+				GameObject myScoreObj = Instantiate (scoreInGameUI, pos, Quaternion.identity) as GameObject;
+				myScoreObj.GetComponent<AnimatePointsObject> ().mypoints = mainscore * mult;
+			}
+		
 
 
 	}
 
 	public  void UpdateDistance (float mainscore) {
+		if (isGameOver)
+			return;
+			
 //		ingamescore.transform.localScale = new Vector3 (1, 1, 1);
 		distance += mainscore;
 //		LeanTween.scale (ingamescore.GetComponent<RectTransform> (), new Vector2 (1.35f, 1.35f), .15f).setEaseInOutSine ();

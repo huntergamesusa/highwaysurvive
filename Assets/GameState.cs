@@ -23,6 +23,7 @@ public class GameState : MonoBehaviour {
 	public Text[] textObjects;
 
 	public bool dontspawncars=false;
+	public GameOver myGameOver;
 
 	void Awake(){
 		if (movingObjects != null) {
@@ -53,6 +54,7 @@ public class GameState : MonoBehaviour {
 
 	public void Restart(){
 		ResetWorld ();
+		myGameOver.ToggleActiveParent (false);
 
 		print ("restart");
 //		System.GC.Collect ();
@@ -109,7 +111,6 @@ public class GameState : MonoBehaviour {
 		EnableAlphaText (false, textObjects);
 
 
-
 	}
 
 	public void MakeSelection(){
@@ -162,6 +163,7 @@ public class GameState : MonoBehaviour {
 		if (restart) {
 			ScoringManager.ResetScore ();
 		}
+		myGameOver.ToggleActiveParent (false);
 
 		print ("replay");
 		OverridePutBackPowerup ();
@@ -252,6 +254,10 @@ public class GameState : MonoBehaviour {
 			powerupParent.transform.GetChild (0).GetChild(i).gameObject.SetActive (false);
 		}
 
+	}
+
+	public void ToggleControls(bool act){
+		joystick.SetActive (act);
 	}
 
 

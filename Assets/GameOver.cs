@@ -35,7 +35,13 @@ public class GameOver : MonoBehaviour {
 	public GameObject parentContinue;
 	public GameObject continueTimer;
 
+	[Header("Other Scripts")]
+	public GameState myGameState;
+
 	int timeRemaining;
+
+	public delegate void gameOverEventHandler (bool isCurrentGameOver);
+	public static event gameOverEventHandler isGameOver;
 
 	// Use this for initialization
 	void Awake () {
@@ -53,13 +59,25 @@ public class GameOver : MonoBehaviour {
 		ToggleActiveParent (false);
 	}
 
+	public void RestartingGame(){
+
+		isGameOver (false);
+
+	}
+
 	public IEnumerator GameEnded(){
-		yield return new WaitForSecondsRealtime(2);
+		isGameOver (true);
+		myGameState.ToggleControls (false);
+		myGameState.OverridePutBackPowerup ();
 		var randomChance = Random.Range (0, 100);
 		print (randomChance);
 		if (randomChance >= 50) {
+			yield return new WaitForSecondsRealtime(1);
+
 			InitTimer();
 		} else {
+			yield return new WaitForSecondsRealtime(2);
+
 			AnimateGameOver ();
 		}
 
@@ -95,7 +113,7 @@ public class GameOver : MonoBehaviour {
 	void AnimateGameOver(){
 		ToggleActiveParent (true);
 		dimmer.GetComponent<Image> ().color = new Color (0, 0, 0, 0);
-		LeanTween.alpha(dimmer.GetComponent<RectTransform>(), 0.39f, .3f).setDelay(.3f);
+		LeanTween.alpha(dimmer.GetComponent<RectTransform>(), 0.39f, .3f);
 
 		LeanTween.move(gameOverTop.GetComponent<RectTransform>(),gameOverTopPos,.3f).setEaseOutElastic();
 		LeanTween.move(gameOverMiddle.GetComponent<RectTransform>(),gameOverMiddlePos,.3f).setEaseOutElastic();
@@ -103,7 +121,7 @@ public class GameOver : MonoBehaviour {
 
 	}
 
-			void ToggleActiveParent(bool act){
+			public void ToggleActiveParent(bool act){
 		dimmer.SetActive (act);
 		gameOverTop.SetActive (act);
 		gameOverMiddle.SetActive (act);
@@ -111,10 +129,42 @@ public class GameOver : MonoBehaviour {
 		if (!act) {
 			gameOverTop.transform.localPosition = new Vector3 (-1000, gameOverTop.transform.localPosition.y, gameOverTop.transform.localPosition.z);
 			gameOverMiddle.transform.localPosition = new Vector3 (1000, gameOverMiddle.transform.localPosition.y, gameOverMiddle.transform.localPosition.z);
-			gameOverBottom.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -250);
+			gameOverBottom.GetComponent<RectTransform> ().anchoredPosition = new Vector2 (0, -250);
 
+
+		} 
+
+			}
+
+	public void GetCoinInfo(int coins){
+		if (coins < 100) {
+			coinsToGoBar.SetActive (true);
+			winAPrizeBar.SetActive (false);
+			coinsToGo.text = (100-coins).ToString();
+
+		} else {
+			winAPrizeBar.SetActive (true);
+
+			coinsToGoBar.SetActive (false);
+		}
+	}
+
+	public void GetScoringInfo(int score, int highscore, int coins){
+
+		gameOverFinalScoreTxt.text = score.ToString();
+		highScoreTxt.text = "BEST "+highscore.ToString();
+		GetCoinInfo (coins);
+
+		if (PlayerPrefs.GetInt ("GiftReady") > 0 && PlayerPrefs.GetInt ("Gifts") >=0) {
+			freeGiftBar.SetActive (true);
+
+		} 
+		else {
+			freeGiftBar.SetActive (false);
 
 		}
 
-			}
+		coinsForPrize.text ="100";
+
+	}
 }

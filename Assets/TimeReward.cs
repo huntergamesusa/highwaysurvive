@@ -22,7 +22,7 @@ public class TimeReward : MonoBehaviour {
 	public AudioClip coinsound;
 	private int lastNotificationId = 0;
 	private int randomGiftAct;
-
+	public GameOver myGameOver;
 
 
 
@@ -131,7 +131,7 @@ public class TimeReward : MonoBehaviour {
 
 	}
 
-	void checkTimeLeft(){
+	public void checkTimeLeft(){
 		TimeSpan unbiasedRemaining = unbiasedTimerEndTimestamp - UnbiasedTime.Instance.Now();
 
 		if (unbiasedRemaining.Hours > 0) {
@@ -257,6 +257,33 @@ public class TimeReward : MonoBehaviour {
 //			//0 min
 //			PlayerPrefs.SetInt("Gifts",1);
 //		}
+
+		if (PlayerPrefs.GetInt ("GiftReady") > 0) {
+			PlayerPrefs.SetInt ("GiftReady", 0);
+			//		GameObject UISound = GameObject.Find ("UIButtonSounds");
+			//		UISound.GetComponent<AudioSource> ().PlayOneShot (punchSound);
+
+			int randomGift = UnityEngine.Random.Range (0, 100);
+
+
+			if (randomGift > 97) {
+				randomGiftAct = UnityEngine.Random.Range (110, 200);
+			}
+			if (randomGift > 86 && randomGift <= 97) {
+				randomGiftAct = UnityEngine.Random.Range (60, 110);
+
+			}
+			if (randomGift <= 86) {
+				randomGiftAct = UnityEngine.Random.Range (40, 60);
+			}
+			StartCoroutine (CoinAnim (randomGiftAct));
+
+			ScoringManager.UpdateCoins (randomGiftAct);
+			myGameOver.GetCoinInfo(PlayerPrefs.GetInt ("Coins"));
+				
+			//make sure time is displayed after receiving wared
+		}
+
 		if (PlayerPrefs.GetInt ("Gifts") == 1) {
 				//3 min
 			print ("wait 3 minutes");
@@ -389,42 +416,22 @@ public class TimeReward : MonoBehaviour {
 
 			
 		}
-		PlayerPrefs.SetInt ("GiftReady", 0);
+
 
 //		currentDate = System.DateTime.Now;
 		PlayerPrefs.SetString("sysString", System.DateTime.Now.ToBinary().ToString());
 
-
-
-
-//		GameObject UISound = GameObject.Find ("UIButtonSounds");
-//		UISound.GetComponent<AudioSource> ().PlayOneShot (punchSound);
-
-		 int randomGift = UnityEngine.Random.Range(0, 100);
-
-
-		if(randomGift >97){
-			randomGiftAct = UnityEngine.Random.Range (110,200);
-		}
-		if(randomGift >86 &&randomGift <=97){
-			randomGiftAct = UnityEngine.Random.Range (60,110);
-
-			}
-		if(randomGift<=86){
-			randomGiftAct = UnityEngine.Random.Range (40,60);
-			}
-		StartCoroutine(CoinAnim (randomGift));
-
-		ScoringManager.UpdateCoins (randomGiftAct);
-
-		//make sure time is displayed after receiving wared
 		checkTimeLeft ();
+
+
+
+
 
 
 	}
 
 
-	IEnumerator CoinAnim(int coins){
+	public IEnumerator CoinAnim(int coins){
 		myCoinExplode.Stop ();
 		freeGiftStart.SetActive (false);
 		myCoinExplode.transform.parent.GetComponent<Camera> ().enabled = true;
@@ -443,6 +450,7 @@ public class TimeReward : MonoBehaviour {
 			CoinAmountTXT.GetComponent<AudioSource> ().PlayOneShot(coinsound,.75f);
 		}
 	}
+		
 
 
 
