@@ -51,13 +51,17 @@ public class EveryplayRecButtonsNate : MonoBehaviour
 
     public void StartRecording()
     {
-        Everyplay.StartRecording();
+		if (Everyplay.IsRecording()) {
+			Everyplay.StopRecording();
+			RecordingStopped ();
+
+		} else {
+			Everyplay.StartRecording ();
+			RecordingStarted ();
+		}
     }
 
-    public void StopRecording()
-    {
-        Everyplay.StopRecording();
-    }
+  
 
     public void RecordingStarted()
     {

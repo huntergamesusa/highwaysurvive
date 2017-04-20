@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 using UnityEngine.UI;
-
+using TMPro;
 public class ScrollRectSnap : MonoBehaviour {
 	public string panelType;
 	public Camera panelCam;
@@ -18,7 +18,7 @@ public class ScrollRectSnap : MonoBehaviour {
 
 //	public Text txtGeneralCash;
 //	public Text txtPriceCash;
-	public Text txtPriceSold;
+	public TextMeshProUGUI txtPriceSold;
 
 	float[] distance;
 
