@@ -14,7 +14,7 @@ public class ScrollRectSnap : MonoBehaviour {
 	public GameObject btnFree;
 	public GameObject btnPrice;
 	public NewCharacterManager purchasingManager;
-	public Text txtName;
+	public TextMeshProUGUI txtName;
 
 //	public Text txtGeneralCash;
 //	public Text txtPriceCash;
