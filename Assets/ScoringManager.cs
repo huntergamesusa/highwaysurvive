@@ -111,7 +111,7 @@ public class ScoringManager : MonoBehaviour {
 	public static void ResetScore () {
 		score = 0;
 		distance = 0;
-		ingamescore.text = score.ToString("#000000000");
+		ingamescore.text = score.ToString();
 
 	}
 

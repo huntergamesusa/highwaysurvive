@@ -54,6 +54,8 @@ public class GameState : MonoBehaviour {
 
 	public void Restart(){
 		ResetWorld ();
+		myGameOver.RestartingGame ();
+
 		myGameOver.ToggleActiveParent (false);
 
 		print ("restart");
@@ -160,6 +162,7 @@ public class GameState : MonoBehaviour {
 	}
 
 	public void ReplaySameGame(bool restart){
+		myGameOver.RestartingGame ();
 		if (restart) {
 			ScoringManager.ResetScore ();
 		}

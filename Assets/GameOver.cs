@@ -20,6 +20,7 @@ public class GameOver : MonoBehaviour {
 	public GameObject winAPrizeBar;
 	public GameObject earnCoinsBar;
 	public GameObject freeGiftBar;
+	public GameObject rateUsBar;
 
 	[Header("Gameover layouts")]
 	public GameObject dimmer;
@@ -54,6 +55,7 @@ public class GameOver : MonoBehaviour {
 		myBars.Add (winAPrizeBar);
 		myBars.Add (earnCoinsBar);
 		myBars.Add (freeGiftBar);
+		myBars.Add (rateUsBar);
 
 
 		ToggleActiveParent (false);
@@ -66,6 +68,8 @@ public class GameOver : MonoBehaviour {
 	}
 
 	public IEnumerator GameEnded(){
+		PlayerPrefs.SetInt ("Plays", PlayerPrefs.GetInt ("Plays") + 1);
+
 		isGameOver (true);
 		myGameState.ToggleControls (false);
 		myGameState.OverridePutBackPowerup ();
@@ -106,11 +110,19 @@ public class GameOver : MonoBehaviour {
 			LeanTween.scale (continueTimer.GetComponent<RectTransform> (), new Vector3 (1f, 1f, 1f), 1).setEaseInOutSine ().setOnComplete (AnimateTime);
 		} else {
 			AnimateGameOver ();
-			parentContinue.SetActive(false);
 		}
 	}
 
-	void AnimateGameOver(){
+	public void TurnOffContinue(){
+		parentContinue.SetActive(false);
+		timeRemaining = 6;
+		LeanTween.cancel (gameObject);
+		LeanTween.cancel (continueTimer.GetComponent<RectTransform> ());
+
+	}
+
+	public void AnimateGameOver(){
+		parentContinue.SetActive(false);
 		ToggleActiveParent (true);
 		dimmer.GetComponent<Image> ().color = new Color (0, 0, 0, 0);
 		LeanTween.alpha(dimmer.GetComponent<RectTransform>(), 0.39f, .3f);
@@ -164,7 +176,32 @@ public class GameOver : MonoBehaviour {
 
 		}
 
+		CheckOnRateBar ();
+
 		coinsForPrize.text ="100";
 
+	}
+
+	void CheckOnRateBar(){
+		if (PlayerPrefs.GetInt ("Plays") > 5) {
+			int myInt = Random.Range (0, 100);
+
+			if (myInt > 80) {
+				if (!PlayerPrefs.HasKey ("RateGame")) {
+					int myCount = 0;
+					for (int i = 0; i < myBars.Count; i++) {
+						if (myBars [i].activeInHierarchy) {
+							myCount++;
+						}
+					}
+					if (myCount < 4) {
+						rateUsBar.SetActive (true);
+					}
+				}
+			} else {
+				rateUsBar.SetActive (false);
+
+			}
+		}
 	}
 }
