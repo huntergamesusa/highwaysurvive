@@ -3,10 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Purchasing;
+using TMPro;
 public class NewCharacterManager : MonoBehaviour,IStoreListener {
 	GameObject mainCharacter;
 	GameObject mainWeapon;
+	[Header("Reward Objects")]
+	public GameObject rewardCharacter;
+	public GameObject rewardWeapon;
+	public GameObject rewardCanvas;
+	public TextMeshProUGUI rewardName;
+	public Camera giftCam;
 
+	[Header("Other Objects")]
 	public GameObject[] myMeshGO;
 	// Use this for initialization
 	public  List<Material> allResourcesMaterial = new List<Material>();
@@ -213,6 +221,52 @@ public class NewCharacterManager : MonoBehaviour,IStoreListener {
 		}
 			
 
+
+	}
+
+	void Update(){
+		if(Input.GetKeyUp(KeyCode.Y)){
+			RewardCharacterRandom();
+
+		}
+	}
+
+	public void RewardCharacterRandom(){
+
+		int randomType = UnityEngine.Random.Range (0, 100);
+
+		if (randomType > 50) {
+			rewardWeapon.SetActive (false);
+			rewardCharacter.transform.parent.gameObject.SetActive (true);
+			int ranCharacterGift = UnityEngine.Random.Range (1, myCharacterSKU.Count);
+			rewardName.text = myCharacterTitles [ranCharacterGift];
+			giftCam.enabled = true;
+			rewardCanvas.SetActive (true);
+			PlayerPrefs.SetInt (myCharacterSKU [ranCharacterGift], 1);
+			rewardCharacter.GetComponent<SkinnedMeshRenderer> ().material = myCharacterMat [ranCharacterGift];
+			foreach (KeyValuePair<Material,Mesh> keyValue in myCharacters) {
+				if (myCharacterMat [ranCharacterGift] == keyValue.Key) {
+					rewardCharacter.GetComponent<SkinnedMeshRenderer> ().sharedMesh = keyValue.Value;
+				}
+			}
+		} else {
+			rewardCharacter.transform.parent.gameObject.SetActive (false);
+			rewardWeapon.SetActive (true);
+			int ranWeaponGift = UnityEngine.Random.Range (1, myWeaponSKU.Count);
+			rewardName.text = myWeaponTitles [ranWeaponGift];
+			giftCam.enabled = true;
+			rewardCanvas.SetActive (true);
+			PlayerPrefs.SetInt (myWeaponSKU [ranWeaponGift], 1);
+			rewardWeapon.GetComponent<MeshRenderer> ().material = myWeaponMat[ranWeaponGift];
+			foreach(KeyValuePair<Material,Mesh> keyValue in myWeapons)
+			{
+				if (myWeaponMat [ranWeaponGift] == keyValue.Key) {
+					rewardWeapon.GetComponent<MeshFilter> ().mesh = keyValue.Value;
+				}
+			}
+
+
+		}
 
 	}
 
