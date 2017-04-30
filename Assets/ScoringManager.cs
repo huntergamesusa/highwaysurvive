@@ -105,6 +105,9 @@ public class ScoringManager : MonoBehaviour {
 
 		coinsTXT.text = PlayerPrefs.GetInt ("Coins").ToString();
 
+		if (cc < 0) {
+			GameObject.Find("GameOver").SendMessage("UpdateBarsAfterPurchase", PlayerPrefs.GetInt ("Coins"));
+		}
 
 	}
 

@@ -153,10 +153,15 @@ public class GameOver : MonoBehaviour {
 			coinsToGoBar.SetActive (true);
 			winAPrizeBar.SetActive (false);
 			coinsToGo.text = (100-coins).ToString();
+			PlayerPrefs.SetInt ("VidFreq", PlayerPrefs.GetInt ("VidFreq") + 1);
+			if (PlayerPrefs.GetInt ("VidFreq") > 2) {
+				PlayerPrefs.SetInt ("VidFreq", 0);
+				earnCoinsBar.SetActive (true);
+			}
 
 		} else {
 			winAPrizeBar.SetActive (true);
-
+			earnCoinsBar.SetActive (false);
 			coinsToGoBar.SetActive (false);
 		}
 	}
@@ -165,6 +170,25 @@ public class GameOver : MonoBehaviour {
 
 		gameOverFinalScoreTxt.text = score.ToString();
 		highScoreTxt.text = "BEST "+highscore.ToString();
+		GetCoinInfo (coins);
+
+		if (PlayerPrefs.GetInt ("GiftReady") > 0 && PlayerPrefs.GetInt ("Gifts") >=0) {
+			freeGiftBar.SetActive (true);
+
+		} 
+		else {
+			freeGiftBar.SetActive (false);
+
+		}
+
+		CheckOnRateBar ();
+
+		coinsForPrize.text ="100";
+
+	}
+
+	public void UpdateBarsAfterPurchase(int coins){
+
 		GetCoinInfo (coins);
 
 		if (PlayerPrefs.GetInt ("GiftReady") > 0 && PlayerPrefs.GetInt ("Gifts") >=0) {

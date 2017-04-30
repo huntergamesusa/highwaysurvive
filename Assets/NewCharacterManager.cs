@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Purchasing;
+using UnityEngine.UI;
 using TMPro;
 public class NewCharacterManager : MonoBehaviour,IStoreListener {
 	GameObject mainCharacter;
@@ -11,9 +12,11 @@ public class NewCharacterManager : MonoBehaviour,IStoreListener {
 	public GameObject rewardCharacter;
 	public GameObject rewardWeapon;
 	public GameObject rewardCanvas;
+	public GameObject flashImage;
 	public TextMeshProUGUI rewardName;
 	public Camera giftCam;
-
+	bool rewardisCharc;
+	string rewardString;
 	[Header("Other Objects")]
 	public GameObject[] myMeshGO;
 	// Use this for initialization
@@ -226,48 +229,72 @@ public class NewCharacterManager : MonoBehaviour,IStoreListener {
 
 	void Update(){
 		if(Input.GetKeyUp(KeyCode.Y)){
-			RewardCharacterRandom();
+			RewardPrizeRandom();
 
 		}
 	}
 
-	public void RewardCharacterRandom(){
+	void FlashOff(){
 
-		int randomType = UnityEngine.Random.Range (0, 100);
+		flashImage.SetActive (false);
 
-		if (randomType > 50) {
-			rewardWeapon.SetActive (false);
-			rewardCharacter.transform.parent.gameObject.SetActive (true);
-			int ranCharacterGift = UnityEngine.Random.Range (1, myCharacterSKU.Count);
-			rewardName.text = myCharacterTitles [ranCharacterGift];
-			giftCam.enabled = true;
+	}
+
+	public void RewardPrizeRandom(){
+		if (PlayerPrefs.GetInt ("Coins") >= 100) {
+			flashImage.SetActive (true);
+			var myColor = flashImage.GetComponent<Image> ().color;
+			flashImage.GetComponent<Image> ().color = new Color (myColor.r, myColor.g, myColor.b, 1);
+			LeanTween.alpha (flashImage.GetComponent<RectTransform> (), 0, .3f).setOnComplete (FlashOff);
 			rewardCanvas.SetActive (true);
-			PlayerPrefs.SetInt (myCharacterSKU [ranCharacterGift], 1);
-			rewardCharacter.GetComponent<SkinnedMeshRenderer> ().material = myCharacterMat [ranCharacterGift];
-			foreach (KeyValuePair<Material,Mesh> keyValue in myCharacters) {
-				if (myCharacterMat [ranCharacterGift] == keyValue.Key) {
-					rewardCharacter.GetComponent<SkinnedMeshRenderer> ().sharedMesh = keyValue.Value;
+			;
+			int randomType = UnityEngine.Random.Range (0, 100);
+
+			if (randomType > 50) {
+				rewardWeapon.SetActive (false);
+				rewardCharacter.transform.parent.gameObject.SetActive (true);
+				int ranCharacterGift = UnityEngine.Random.Range (1, myCharacterSKU.Count);
+				rewardName.text = myCharacterTitles [ranCharacterGift];
+				rewardisCharc = true;
+				giftCam.enabled = true;
+				PlayerPrefs.SetInt (myCharacterSKU [ranCharacterGift], 1);
+				rewardString = myCharacterSKU [ranCharacterGift];
+				rewardCharacter.GetComponent<SkinnedMeshRenderer> ().material = myCharacterMat [ranCharacterGift];
+				foreach (KeyValuePair<Material,Mesh> keyValue in myCharacters) {
+					if (myCharacterMat [ranCharacterGift] == keyValue.Key) {
+						rewardCharacter.GetComponent<SkinnedMeshRenderer> ().sharedMesh = keyValue.Value;
+					}
 				}
+			} else {
+				rewardCharacter.transform.parent.gameObject.SetActive (false);
+				rewardWeapon.SetActive (true);
+
+				int ranWeaponGift = UnityEngine.Random.Range (1, myWeaponSKU.Count);
+				rewardName.text = myWeaponTitles [ranWeaponGift];
+				giftCam.enabled = true;
+				PlayerPrefs.SetInt (myWeaponSKU [ranWeaponGift], 1);
+				rewardString = myWeaponSKU [ranWeaponGift];
+				rewardisCharc = false;
+				rewardWeapon.GetComponent<MeshRenderer> ().material = myWeaponMat [ranWeaponGift];
+				foreach (KeyValuePair<Material,Mesh> keyValue in myWeapons) {
+					if (myWeaponMat [ranWeaponGift] == keyValue.Key) {
+						rewardWeapon.GetComponent<MeshFilter> ().mesh = keyValue.Value;
+					}
+				}
+
+
 			}
+			ScoringManager.UpdateCoins (-100);
+		}
+	}
+
+	public void EquiptReward(){
+		if (rewardisCharc) {
+			SelectCharacter (rewardString);
 		} else {
-			rewardCharacter.transform.parent.gameObject.SetActive (false);
-			rewardWeapon.SetActive (true);
-			int ranWeaponGift = UnityEngine.Random.Range (1, myWeaponSKU.Count);
-			rewardName.text = myWeaponTitles [ranWeaponGift];
-			giftCam.enabled = true;
-			rewardCanvas.SetActive (true);
-			PlayerPrefs.SetInt (myWeaponSKU [ranWeaponGift], 1);
-			rewardWeapon.GetComponent<MeshRenderer> ().material = myWeaponMat[ranWeaponGift];
-			foreach(KeyValuePair<Material,Mesh> keyValue in myWeapons)
-			{
-				if (myWeaponMat [ranWeaponGift] == keyValue.Key) {
-					rewardWeapon.GetComponent<MeshFilter> ().mesh = keyValue.Value;
-				}
-			}
-
+			SelectWeapon (rewardString);
 
 		}
-
 	}
 
 	public void InitWeapon(){
